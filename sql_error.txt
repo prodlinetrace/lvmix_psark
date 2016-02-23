@@ -1,0 +1,407 @@
+Wednesday 17.02.2016, 22:31:13	Login: Oracle error: -12154	ORA-12154: TNS:could not resolve the connect identifier specified
+
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:32:16	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Wednesday 17.02.2016, 22:36:22	getLanguageString: Not found: 1403	ORA-01403: no data found
+
+select LOOKUP_TEXT into :b0:b1  from PRODANG.LANGUAGE_STRINGS where (LABEL=:b2 and language_id=:b3)
+Thursday 18.02.2016, 00:07:16	Login: Oracle error: -12560	ORA-12560: TNS:protocol adapter error
+
+Thursday 18.02.2016, 00:09:20	Login: Oracle error: -12560	ORA-12560: TNS:protocol adapter error
+
+Thursday 18.02.2016, 00:09:42	Login: Oracle error: -12560	ORA-12560: TNS:protocol adapter error
+
+Thursday 18.02.2016, 00:11:25	Login: Oracle error: -12560	ORA-12560: TNS:protocol adapter error
+
+Thursday 18.02.2016, 02:32:06	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:43:05	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:43:38	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:43:54	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:45:23	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:49:51	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:50:33	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:50:54	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 02:51:48	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+
+Thursday 18.02.2016, 03:03:11	NewProduct: Oracle error: -1400	ORA-01400: cannot insert NULL into ("PRODANG"."PRODUCT"."SERIAL_NUMBER
+insert into PRODANG.PRODUCT (ID,L_ID,DB_ID,CR_TIME,MD_TIME,CR_PROCESS_STEP_ID,WABCO_PART_ID,SERIAL_NUMBER,INDIVIDUAL,XCOMMENT) values (to_number(:b0),to_number(:b0),:b2,to_date(:b3,'dd.mm.yyyy hh24:mi:ss'),to_date(:b4,'dd.mm.yyyy hh24:mi:ss'),decode(:b5,0,null ,:b5),:b7,:b8,:b9,:b10)
+Thursday 18.02.2016, 20:51:25	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:51:40	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:52:14	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:52:28	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:53:36	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:54:28	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 20:55:08	NewProcessStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 22:29:37	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 22:34:00	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 22:34:11	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 22:34:17	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 22:42:23	NewTestStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 22:42:58	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 22:43:21	NewTestStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 22:46:58	SetTestStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+Thursday 18.02.2016, 23:02:33	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:04:49	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:13:05	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:17:38	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:18:54	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:21:06	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:24:25	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:25:37	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:26:59	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:29:06	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:36:51	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:36:56	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:37:05	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:37:08	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Thursday 18.02.2016, 23:49:13	SetProcessStepResult: Oracle error: -1858	ORA-01858: a non-numeric character was found where a numeric was expec
+update PRODANG.PROCESS_STEP_RESULT  set STATUS_ID=:b0,OPERATOR_ID=:b1,START_TIME=to_date(:b2,'dd.mm.yyyy hh24:mi:ss'),END_TIME=to_date(:b3,'dd.mm.yyyy hh24:mi:ss') where ID=to_number(:b4)
+Thursday 18.02.2016, 23:51:23	SetProcessStepResult: Oracle error: -1858	ORA-01858: a non-numeric character was found where a numeric was expec
+update PRODANG.PROCESS_STEP_RESULT  set STATUS_ID=:b0,OPERATOR_ID=:b1,START_TIME=to_date(:b2,'dd.mm.yyyy hh24:mi:ss'),END_TIME=to_date(:b3,'dd.mm.yyyy hh24:mi:ss') where ID=to_number(:b4)
+Friday 19.02.2016, 00:00:55	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:05:55	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:08:16	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:14:39	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:14:41	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:14:51	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:14:59	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:16:35	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:16:38	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:16:52	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:03	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:04	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:06	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:07	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:08	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:17:10	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 00:18:26	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 12:16:21	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 12:31:42	NewTestValueResult: Oracle error: -1722	ORA-01722: invalid number
+
+insert into PRODANG.TEST_VALUE_RESULT (ID,L_ID,DB_ID,TEST_VALUE_ID,STATUS_ID,TEST_STEP_RESULT_ID,RESULT,CONTENT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,:b3,:b4,to_number(:b5),:b6,to_number(:b7:b8),'0')
+Friday 19.02.2016, 19:30:00	GetProcess: Not found: 1403	ORA-01403: no data found
+
+select to_char(CONTENT_ID) ,MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,to_char(PREVIEW_ID) ,PRODUCTION_LINE_ID ,RELEASE_ID ,DESCRIPTION_LABEL into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15  from PRODANG.PROCESS where (ID=:b16 and RELEASE_ID=1)
+Friday 19.02.2016, 19:30:00	GetProductionLine: Not found: 1403	ORA-01403: no data found
+
+select DESCRIPTION_LABEL into :b0:b1  from PRODANG.PRODUCTION_LINE where ID=:b2
+Friday 19.02.2016, 19:30:00	GetProcessStep: Not found: 1403	ORA-01403: no data found
+
+select MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,RELEASE_ID ,DESCRIPTION_LABEL ,FILENAME ,TRANSFER ,PROCESS_ID ,SYSTEM_ID ,PROCESS_SEQUENCE ,LIMIT_YELLOW ,LIMIT_RED into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15,:b16:b17,:b18:b19,:b20:b21,:b22:b23  from PRODANG.PROCESS_STEP where (ID=:b24 and RELEASE_ID=1)
+Friday 19.02.2016, 19:30:00	GetSystem: Not found: 1403	ORA-01403: no data found
+
+select NAME into :b0  from PRODANG.SYSTEMS where ID=:b1
+Friday 19.02.2016, 19:30:00	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+ﬂ„æwñ‚æw∏˜·
+L
+Friday 19.02.2016, 19:30:00	NewProcessResult: Oracle error: -1400	ORA-01400: cannot insert NULL into ("PRODANG"."PROCESS_RESULT"."PRODUC
+insert into PRODANG.PROCESS_RESULT (ID,L_ID,DB_ID,START_TIME,PROCESS_ID,STATUS_ID,PRODUCT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,to_date(:b3,'dd.mm.yyyy hh24:mi:ss'),:b4,:b5,to_number(:b6),'0')
+Friday 19.02.2016, 19:30:00	NewProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=sysdate where ID=(select PRODUCT_ID  from PRODANG.PROCESS_RESULT where ID=to_number(:b0))
+Friday 19.02.2016, 19:30:00	SetProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PROCESS_STEP_RESULT  set STATUS_ID=:b0,OPERATOR_ID=:b1,START_TIME=to_date(:b2,'dd.mm.yyyy hh24:mi:ss'),END_TIME=to_date(:b3,'dd.mm.yyyy hh24:mi:ss') where ID=to_number(:b4)
+Friday 19.02.2016, 19:30:00	SetProduct: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=to_date(:b0,'dd.mm.yyyy hh24:mi:ss'),MD_PROCESS_STEP_ID=decode(:b1,0,null ,:b1),WABCO_PART_ID=:b3,SERIAL_NUMBER=:b4,INDIVIDUAL=:b5,XCOMMENT=:b6 where ID=to_number(:b7)
+Tuesday 23.02.2016, 00:50:35	Login: Oracle error: -12170	ORA-12170: TNS:Connect timeout occurred
+
+Tuesday 23.02.2016, 10:44:53	GetProcess: Not found: 1403	ORA-01403: no data found
+
+select to_char(CONTENT_ID) ,MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,to_char(PREVIEW_ID) ,PRODUCTION_LINE_ID ,RELEASE_ID ,DESCRIPTION_LABEL into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15  from PRODANG.PROCESS where (ID=:b16 and RELEASE_ID=1)
+Tuesday 23.02.2016, 10:44:53	GetProductionLine: Not found: 1403	ORA-01403: no data found
+
+select DESCRIPTION_LABEL into :b0:b1  from PRODANG.PRODUCTION_LINE where ID=:b2
+Tuesday 23.02.2016, 10:44:53	GetProcessStep: Not found: 1403	ORA-01403: no data found
+
+select MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,RELEASE_ID ,DESCRIPTION_LABEL ,FILENAME ,TRANSFER ,PROCESS_ID ,SYSTEM_ID ,PROCESS_SEQUENCE ,LIMIT_YELLOW ,LIMIT_RED into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15,:b16:b17,:b18:b19,:b20:b21,:b22:b23  from PRODANG.PROCESS_STEP where (ID=:b24 and RELEASE_ID=1)
+Tuesday 23.02.2016, 10:44:53	GetSystem: Not found: 1403	ORA-01403: no data found
+
+select NAME into :b0  from PRODANG.SYSTEMS where ID=:b1
+Tuesday 23.02.2016, 10:44:53	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+ﬂ„Åwñ‚Åw∏˜Â
+L
+Tuesday 23.02.2016, 10:44:53	NewProcessResult: Oracle error: -1400	ORA-01400: cannot insert NULL into ("PRODANG"."PROCESS_RESULT"."PRODUC
+insert into PRODANG.PROCESS_RESULT (ID,L_ID,DB_ID,START_TIME,PROCESS_ID,STATUS_ID,PRODUCT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,to_date(:b3,'dd.mm.yyyy hh24:mi:ss'),:b4,:b5,to_number(:b6),'0')
+Tuesday 23.02.2016, 10:44:53	NewProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=sysdate where ID=(select PRODUCT_ID  from PRODANG.PROCESS_RESULT where ID=to_number(:b0))
+Tuesday 23.02.2016, 10:44:53	SetProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PROCESS_STEP_RESULT  set STATUS_ID=:b0,OPERATOR_ID=:b1,START_TIME=to_date(:b2,'dd.mm.yyyy hh24:mi:ss'),END_TIME=to_date(:b3,'dd.mm.yyyy hh24:mi:ss') where ID=to_number(:b4)
+Tuesday 23.02.2016, 10:44:53	SetProduct: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=to_date(:b0,'dd.mm.yyyy hh24:mi:ss'),MD_PROCESS_STEP_ID=decode(:b1,0,null ,:b1),WABCO_PART_ID=:b3,SERIAL_NUMBER=:b4,INDIVIDUAL=:b5,XCOMMENT=:b6 where ID=to_number(:b7)
