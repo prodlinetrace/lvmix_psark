@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <unistd.h>
-#include <string.h>
+#include <string>
 #include <typeinfo>
 #include "prodllng/ProdaNG_DLL.h"
 #include "optionparser.h"
@@ -49,8 +49,12 @@ class Proda                   // begin declaration of the class
     int new_process_result();
     int new_process_step_result(int operator_id);
     int generate_test_results();
-    int add_test_results();
-    int new_test_step_value();
+    //int add_test_result();
+    int add_test_step_result(int test_step_id, int result);
+    //int add_test_step_value();
+    //int add_test_step_value(int test_step_id);
+    int add_test_step_value(int test_step_id, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0);
+	int add_test_data(int test_step_id, int test_step_result_status, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0);
     int set_product();
 	int set_process_step_result();
 	int set_process_result();
@@ -741,11 +745,211 @@ class Proda                   // begin declaration of the class
 		return 0;
 	}
 
-	int Proda::new_test_step_value() {
+	int Proda::add_test_data(int test_step_id, int test_step_result_status, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0) {
+		/*
+			Test step result - adding
+			This function should be used to feed database with test data
+			Required: processStepResultId, testStepId, statusId, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0
+		*/
+		double results[5] = {r1, r2, r3, r4, r5};
+		int test_step_found = 0;
+
+
+		memset(&test_step_result, 0 , sizeof(test_step_result)); // clear process_step_result structure
+		test_step_result.testStepId=test_step_id; // set testStepId for test step definition
+		strcpy(test_step_result.processStepResultId,process_step_result.id); // set processStepResultId for process step result
+		test_step_result.statusId=test_step_result_status; // -1 -> dll decide about status
+		r = NewTestStepResult(h1,&test_step_result); // begin test step result creation
+		//printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		std::cout << "NewTestStepResult for testStepId: " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		switch (r){
+			case 0:
+				printf("ok\n");
+				printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
+						 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
+				break;
+			default:
+				printf("error: %d\n\n",r); // error
+				return 0;
+		}
+		for (i=0;i<test_step_cnt;i++){ // save all test steps
+			// test values for test step
+			if (test_step_tbl[i]->id == test_step_id) {
+				test_step_found = 1;
+				std::cout << "Found TestStep with id: " << test_step_tbl[i]->id << ", desc: " << test_step_tbl[i]->description <<"\n";
+				test_value_tbl = test_value_tbl_tbl[i];
+				test_value_cnt = test_value_cnt_tbl[i];
+				for (j=0;j<test_value_cnt;j++){
+					test_value_min=test_value_tbl[j]->minimum;
+					test_value_max=test_value_tbl[j]->maximum;
+
+					/*
+					Test value generating
+						Required: testStepResultId, testValueId, result, statusId
+						Optional: contentId (defalt=null)
+					*/
+					memset(&test_value_result, 0 , sizeof(test_value_result)); // clear test_value_result structure
+					test_value_result.result=results[j];
+					//std::cout << "RESULT: " << test_value_result.result << "\n";
+					test_value_result.statusId=-1; // -1 -> dll decide about status
+					//test_value_result.statusId=0; // -1 -> dll decide about status
+					test_value_result.testValueId=test_value_tbl[j]->id;
+					strcpy(test_value_result.testStepResultId, test_step_result.id);
+					r = NewTestValueResult(h1,&test_value_result); // begin test value result creation
+					std::cout << "NewTestValueResult for testValueId: "<< test_value_tbl[j]->id <<" Test value sequence: " << test_value_tbl[j]->testValueSequence << " Description: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result<< '\n';
+
+					switch (r){
+						case 0:
+							printf("ok\n");
+							//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
+							//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
+							break;
+						default:
+							printf("error: %d\n\n",r); // error
+							return 0;
+					}
+
+					/*
+					finish test value creation
+						Required: id, testStepResultId, testValueId, result, statusId
+						Optional: contentId (defalt=null)
+						Advise: provide structure returned by NewValueResult; if statusId in NewTestValueResult was already set to correct value (by set -1 or required value) then avoid set it again to -1 to avoid performance drop.
+					*/
+					r = SetTestValueResult(h1,0,&test_value_result); // finish test value result creation, isRepeat=0 as we do not repeat measurements
+					printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
+					switch (r){
+						case 0:
+							printf("ok\n");
+							//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
+							//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
+							break;
+						default:
+							printf("error: %d\n\n",r); // error
+							return 0;
+					}
+				}
+			}
+				//break; // Test step found - no need to iterate further.
+		}
+		if (test_step_found == 0) {
+			std::cout << "TestStep with id: " << test_step_id << " not found.\n";
+		}
+		/*
+		finish test step result creation
+			Required: id, processStepResultId, testStepId, statusId
+			Advise: provide structure returned by NewTestStepResult and update statusId (-1/-3 to do automatic status calculation or required status).
+		*/
+		/*
+		*/
+		test_step_result.statusId=test_step_result_status;
+		r = SetTestStepResult(h1,0,&test_step_result); // finish test step result creation, isRepeat=0 as we do not repeat steps
+		//printf("SetTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		std::cout << "NewTestStepResult for testStepId= " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		switch (r){
+			case 0:
+				printf("ok\n");
+				printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
+						 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
+				break;
+			default:
+				printf("error: %d\n\n",r); // error
+				return 0;
+		}
 		return 0;
 	}
 
-	int Proda::add_test_results() {
+	int Proda::add_test_step_result(int test_step_id, int test_step_result_status) {
+		/*
+		Test step result - adding
+			Required: processStepResultId, testStepId, statusId
+		*/
+		memset(&test_step_result, 0 , sizeof(test_step_result)); // clear process_step_result structure
+		test_step_result.testStepId=test_step_id; // set testStepId for test step definition
+		strcpy(test_step_result.processStepResultId,process_step_result.id); // set processStepResultId for process step result
+		test_step_result.statusId=test_step_result_status; // -1 -> dll decide about status
+		r = NewTestStepResult(h1,&test_step_result); // begin test step result creation
+		//printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		std::cout << "NewTestStepResult for testStepId= " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+		switch (r){
+			case 0:
+				printf("ok\n");
+				printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
+						 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
+				break;
+			default:
+				printf("error: %d\n\n",r); // error
+				return 0;
+		}
+
+		return 0;
+	}
+
+	int Proda::add_test_step_value(int test_step_id, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0) {
+		//return 0;
+		double results[5] = {r1, r2, r3, r4, r5};
+		int test_step_found = 0;
+		for (i=0;i<test_step_cnt;i++){ // save all test steps
+			// test values for test step
+			if (test_step_tbl[i]->id == test_step_id) {
+				test_step_found = 1;
+				std::cout << "Found TestStep with id: " << test_step_tbl[i]->id << ", desc: " << test_step_tbl[i]->description <<"\n";
+				test_value_tbl = test_value_tbl_tbl[i];
+				test_value_cnt = test_value_cnt_tbl[i];
+				for (j=0;j<test_value_cnt;j++){
+					test_value_min=test_value_tbl[j]->minimum;
+					test_value_max=test_value_tbl[j]->maximum;
+
+					/*
+					Test value generating
+						Required: testStepResultId, testValueId, result, statusId
+						Optional: contentId (defalt=null)
+					*/
+					memset(&test_value_result, 0 , sizeof(test_value_result)); // clear test_value_result structure
+					test_value_result.result=results[j];
+					//std::cout << "RESULT: " << test_value_result.result << "\n";
+					test_value_result.statusId=-1; // -1 -> dll decide about status
+					//test_value_result.statusId=0; // -1 -> dll decide about status
+					test_value_result.testValueId=test_value_tbl[j]->id;
+					strcpy(test_value_result.testStepResultId, test_step_result.id);
+					r = NewTestValueResult(h1,&test_value_result); // begin test value result creation
+					std::cout << "NewTestValueResult for testValueId: "<< test_value_tbl[j]->id <<" Test value sequence: " << test_value_tbl[j]->testValueSequence << " Description: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result<< '\n';
+
+					switch (r){
+						case 0:
+							printf("ok\n");
+							//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
+							//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
+							break;
+						default:
+							printf("error: %d\n\n",r); // error
+							return 0;
+					}
+
+					/*
+					finish test value creation
+						Required: id, testStepResultId, testValueId, result, statusId
+						Optional: contentId (defalt=null)
+						Advise: provide structure returned by NewValueResult; if statusId in NewTestValueResult was already set to correct value (by set -1 or required value) then avoid set it again to -1 to avoid performance drop.
+					*/
+					r = SetTestValueResult(h1,0,&test_value_result); // finish test value result creation, isRepeat=0 as we do not repeat measurements
+					printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
+					switch (r){
+						case 0:
+							printf("ok\n");
+							//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
+							//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
+							break;
+						default:
+							printf("error: %d\n\n",r); // error
+							return 0;
+					}
+				}
+			}
+				//break; // Test step found - no need to iterate further.
+		}
+		if (test_step_found == 0) {
+			std::cout << "TestStep with id: " << test_step_id << " not found.\n";
+		}
 
 		return 0;
 	}
@@ -877,18 +1081,32 @@ int main(int argc, char *argv[]){
 		default:
 			abort ();
 	}
-		printf ("aflag = %d, bflag = %d, cvalue = %s\n", aflag, bflag, cvalue);
+	if (not cvalue) {
+		std::cout << "Command parameter is mandatory. Sorry. Exit.\n";
+		return 1;
 
+	}
 	std::string args[argc];
-	std::string command;
+	std::string command, wabco_number, serial;
+	//int
+	command = cvalue;
+	std::cout << "Command: "<< cvalue << "\n";
+
+
 	int i = 0;
-	for (index = optind+1; index < argc; index++) {
+	for (index = optind; index < argc; index++) {
 		printf ("Non-option argument %s\n", argv[index]);
 		args[++i] =  (std::string) argv[index];
 	}
-	command = argv[1];
+	//command = argv[1];
+	wabco_number = args[1];
+	serial = args[2];
 	std::cout << "command: " << command << "\n";
+	std::cout << "wabco_number: " << wabco_number << "\n";
+	std::cout << "serial: " << serial << "\n";
 	std::cout << "args: " << args << "\n";
+
+	//return 1;
 
 /***
 	argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
@@ -949,13 +1167,13 @@ int main(int argc, char *argv[]){
 		Psark.set_process_step_result();
 		Psark.set_process_result();
 		Psark.set_product();
-	} else if (command == "new_product") {
-		std::cout << "Adding new product.\n" << "Wabco Number: " << args[1] << ", Serial: " << args[2] <<"\n";
+	} else if (command == "new_tv") {
+		std::cout << "Adding new product.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
 
 		Proda Psark(0);
 		Psark.init();
 		Psark.login();
-		Psark.identify_me(args[1]);
+		Psark.identify_me(wabco_number);
 		Psark.get_process();
 		Psark.get_production_line();
 		Psark.get_process_step();
@@ -965,11 +1183,20 @@ int main(int argc, char *argv[]){
 		Psark.get_test_step_params();
 		Psark.get_test_values();
 
-		Psark.new_product(args[2]);
+		Psark.new_product(serial);
 		Psark.new_process_result();
 		Psark.new_process_step_result();
+		int ts_id, status_id;
+		double r1, r2, r3;
+		ts_id = atoi(args[3].c_str());
+		status_id = atoi(args[4].c_str());
+		r1 = atoll(args[5].c_str());
+		r2 = atoll(args[6].c_str());
+		r3 = atoll(args[7].c_str());
 
-		Psark.add_test_results();
+		//(int) args[4], (double) args[5], (double) args[6], (double) args[7]
+		//Psark.add_test_step_result(43, 1);
+		Psark.add_test_data(ts_id, status_id, r1, r2, r3);
 
 		Psark.set_process_step_result();
 		Psark.set_process_result();
