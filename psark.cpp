@@ -7,17 +7,20 @@
 //============================================================================
 //#define	_CRT_SECURE_NO_DEPRECATE
 
-#pragma pack(push,1)
+//#pragma pack(push,1)
 
 #include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include <sstream>
+#include <fstream>
+#include <string>
+//#include <stdio.h>
+//#include <stdlib.h>
 #include <windows.h>
 #include <unistd.h>
-#include <string>
 #include <typeinfo>
 #include "prodllng/ProdaNG_DLL.h"
-#include "optionparser.h"
+using namespace std;
+//#include "json.hpp"
 
 
 
@@ -1031,34 +1034,21 @@ class Proda                   // begin declaration of the class
 		return 0;
 	}
 
-
-
-enum  optionIndex { UNKNOWN, HELP, PLUS, CMD };
-const option::Descriptor usage[] =
-{
- {UNKNOWN, 0,"" , ""    ,option::Arg::None, "USAGE: example [options]\n\n"
-                                            "Options:" },
- {HELP,    0,"" , "help",option::Arg::None, "  --help  \tPrint usage and exit." },
-//{PLUS,    0,"p", "plus",option::Arg::None, "  --plus, -p  \tIncrement count." },
- //{CMD,     0,"c" , "cmd",option::Arg::Optional, "  --cmd  \tCommand." },
- //{UNKNOWN, 0,"" ,  ""   ,option::Arg::None, "\nExamples:\n"
- //                                           "  example --unknown -- --this_is_no_option\n"
- //                                           "  example -unk --plus -ppp file1 file2\n" },
- {0,0,0,0,0,0}
-};
-
-
+inline bool file_exists_test (const std::string& name) {
+	return ( access( name.c_str(), F_OK ) != -1 );
+}
 
 int main(int argc, char *argv[]){
 	puts("PSARK - Proda Swiss Army Knife.");
 	int aflag = 0;
 	int bflag = 0;
 	char *cvalue = NULL;
+	char *fvalue = NULL;
 	int index;
 	int c;
 
 	opterr = 0;
-	while ((c = getopt (argc, argv, "abc:")) != -1)
+	while ((c = getopt (argc, argv, "abc:f:")) != -1)
 	switch (c)
 	{
 		case 'a':
@@ -1070,8 +1060,11 @@ int main(int argc, char *argv[]){
 		case 'c':
 			cvalue = optarg;
 			break;
+		case 'f':
+			fvalue = optarg;
+			break;
 		case '?':
-			if (optopt == 'c')
+			if ((optopt == 'c') or (optopt == 'f'))
 				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
 			else if (isprint (optopt))
 				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -1084,8 +1077,49 @@ int main(int argc, char *argv[]){
 	if (not cvalue) {
 		std::cout << "Command parameter is mandatory. Sorry. Exit.\n";
 		return 1;
+	}
+	if (fvalue and 0 ) {
+		if (file_exists_test(fvalue)) {
+			cout << "Trying to use csv file: "<< fvalue <<" OK - (file exists)\n";
+		}else {
+			cerr << "CSV file: " << fvalue << "\n";
+			perror("ERROR: specified CSV file does not exists! ");
+			return 5;
+		}
+
+		string line;
+		ifstream data(fvalue);
+		if (!data.is_open())
+		    perror("error while opening file");
+
+		std::string csv_tokens[5] = {"", "", "", "", ""};
+		//int i = 0;
+
+		while(std::getline(data, line, '\n')) {
+			std::string token;
+			std::stringstream  lineStream(line);
+			/*
+			while(std::getline(lineStream, token, ' ')) {
+				cout << token << ' ';
+				csv_tokens[i++] = token;
+			}
+			*/
+			for (int i=0; std::getline(lineStream, token, ' '); ){
+				cout << token << " ";
+				csv_tokens[i++] = token;
+			}
+
+			cout << "\n";
+			//for (int i=0; i<5; i++)
+			//	cout << csv_tokens[i];
+		}
+	    if (data.bad())
+	        perror("error while reading file");
+
+		return 0;
 
 	}
+	//return 0;
 	std::string args[argc];
 	std::string command, wabco_number, serial;
 	//int
@@ -1190,9 +1224,9 @@ int main(int argc, char *argv[]){
 		double r1, r2, r3;
 		ts_id = atoi(args[3].c_str());
 		status_id = atoi(args[4].c_str());
-		r1 = atoll(args[5].c_str());
-		r2 = atoll(args[6].c_str());
-		r3 = atoll(args[7].c_str());
+		r1 = atof(args[5].c_str());
+		r2 = atof(args[6].c_str());
+		r3 = atof(args[7].c_str());
 
 		//(int) args[4], (double) args[5], (double) args[6], (double) args[7]
 		//Psark.add_test_step_result(43, 1);
@@ -1201,6 +1235,82 @@ int main(int argc, char *argv[]){
 		Psark.set_process_step_result();
 		Psark.set_process_result();
 		Psark.set_product();
+	} else if (command == "csv_feed") {
+		std::cout << "Running: csv_feed.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
+
+		Proda Psark(0);
+		Psark.init();
+		Psark.login();
+		Psark.identify_me(wabco_number);
+		Psark.get_process();
+		Psark.get_production_line();
+		Psark.get_process_step();
+		Psark.get_system();
+		Psark.get_process_step_parameters();
+		Psark.get_test_steps_orderby(1);
+		Psark.get_test_step_params();
+		Psark.get_test_values();
+
+		Psark.new_product(serial);
+		Psark.new_process_result();
+		Psark.new_process_step_result();
+		int ts_id, status_id;
+		double r1, r2, r3;
+		ts_id = atoi(args[3].c_str());
+		status_id = atoi(args[4].c_str());
+		r1 = atof(args[5].c_str());
+		r2 = atof(args[6].c_str());
+		r3 = atof(args[7].c_str());
+
+		if (fvalue) {
+			if (file_exists_test(fvalue)) {
+				cout << "Trying to use csv file: "<< fvalue <<" OK - (file exists)\n";
+			}else {
+				cerr << "CSV file: " << fvalue << "\n";
+				perror("ERROR: specified CSV file does not exists! ");
+				return 5;
+			}
+
+			int csv_line_number = 0;
+			std::string csv_tokens[5] = {"", "", "", "", ""};
+			string line;
+			ifstream data(fvalue);
+			if (!data.is_open())
+			    perror("error while opening file");
+
+
+			while(std::getline(data, line, '\n')) {
+				std::string token;
+				std::stringstream  lineStream(line);
+
+				cout << "Preparing test data to feed: ";
+				for (int i=0; std::getline(lineStream, token, ' '); ){
+					csv_tokens[i++] = token;
+					cout << token << " ";
+				}
+				cout << "\n";
+				// convert data to the one accepted by add_test_data
+				ts_id = atoi(csv_tokens[0].c_str());
+				status_id = atoi(csv_tokens[1].c_str());
+				r1 = atof(csv_tokens[2].c_str());
+				r2 = atof(csv_tokens[3].c_str());
+				r3 = atof(csv_tokens[4].c_str());
+				cout << "following data will be used to feed: TS_ID: " << ts_id << " STATUS_ID: "<< status_id << " R1: " << r1 << " R2: " << r2 << " R3: " << r3 << std::endl;
+				// feed test data
+				//(int) (int) (double) (double) (double)
+				Psark.add_test_data(ts_id, status_id, r1, r2, r3);
+				csv_line_number++;
+				//Psark.add_test_step_result(43, 1);
+			}
+		    if (data.bad())
+		        perror("error while reading file");
+		    cout << "CSV feed finished. " << csv_line_number << " values were uploaded!\n\n";
+		}
+
+		Psark.set_process_step_result();
+		Psark.set_process_result();
+		Psark.set_product();
+		std::cout << "BSARK finished. \n";
 	} else {
 		std::cout <<"command not recognized: " << command << "\n";
 	}

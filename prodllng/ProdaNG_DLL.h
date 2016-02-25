@@ -15,24 +15,27 @@
 //                                                - FreeData( void **data ) in ProdaNG_DLL.pc
 //                                                - GetProductionLine, GetProductionLines in masterdata.pc
 //                                                New struct ProductionLine in ProdaNG_DLL.h
-// Version 2.4 03.03.2008       Günter Morlang    Preference "IGNORERELEASEID" added 
-// Versoim 2.5 13.03.2008		Markus Hess (A&L) Fixed comment typos and indenting for VS
-// Versoim 2.6 06.05.2008		Markus Hess (A&L) New function GetPreviousProcessStepStatus
-// Version 2.7 12.12.2008		Maciej Iwanczewski New function GetTestSteps_orderby
-// Version 2.7.0.1 18.12.2008	Maciej Iwanczewski New status: -3 to automaticly set status 100+standard status=100,101,105... for devices which should not be used in statistical analysis (prototypes/testbench test)
-// Version 3.0 29.04.2010		Maciej Iwanczewski New functions: New/Set/DeleteProcessStepParam, New/Set/DeleteTestStepParam, New/Set/DeleteTestStep, New/Set/DeleteTestValue, NewWabcoPart, NewWabcoPart_Process
-// Version 3.1 20.03.2012		Maciej Iwanczewski New function UpdateWabcoNumber
-// Version 3.2 10.07.2013		Maciej Iwanczewski Update SetTestStepResult and SetProcessStepResult
-// Version 3.3 18.09.2013		Maciej Iwanczewski add dedicated functions for WPL EAPU line (eapu.pc file)
-// Version 3.5 20.05.2014		Maciej Iwanczewski extend serial number field size, add functions to manage componets, add _lsn functions to manage products with loong serial numbers
-// Standard Return Codes:
+// Version 2.4 03.03.2008       Günter Morlang    Preference "IGNORERELEASEID" added
+// Versoim 2.5 13.03.2008       Markus Hess (A&L) Fixed comment typos and indenting for VS
+// Versoim 2.6 06.05.2008       Markus Hess (A&L) New function GetPreviousProcessStepStatus
+// Version 2.7 12.12.2008       Maciej Iwanczewski New function GetTestSteps_orderby
+// Version 2.7.0.1 18.12.2008   Maciej Iwanczewski New status: -3 to automaticly set status 100+standard status=100,101,105... for devices which should not be used in statistical analysis (prototypes/testbench test)
+// Version 3.0 29.04.2010       Maciej Iwanczewski New functions: New/Set/DeleteProcessStepParam, New/Set/DeleteTestStepParam, New/Set/DeleteTestStep, New/Set/DeleteTestValue, NewWabcoPart, NewWabcoPart_Process
+// Version 3.1 20.03.2012       Maciej Iwanczewski New function UpdateWabcoNumber
+// Version 3.2 10.07.2013       Maciej Iwanczewski Update SetTestStepResult and SetProcessStepResult
+// Version 3.3 18.09.2013       Maciej Iwanczewski add dedicated functions for WPL EAPU line (eapu.pc file)
+// Version 3.5 20.05.2014       Maciej Iwanczewski extend serial number field size, add functions to manage componets, add _lsn functions to manage products with loong serial numbers
+// 20151201_01 MI: add #pragma pack(push,1) and #pragma pack(pop) to prodaNG_dll.h. Do changes in GetPreviousProcessStepStatus
 //
-// 0				OK
+// Standard Return Codes:
+// 0    OK
 // Oracle Errors	< 0 or 1403 (No record found)
 // Windows error code ERROR_INVALID_HANDLE in case of an invalid handle
 //
 // Other error codes are documented in the function declaration and definition comments
 //
+
+#pragma pack(push,1) // set struct member alignment to 1 byte
 
 #if !defined(__PRODADLL_EXPORT__) && !defined(__PRODADLL_IMPORT__) && \
     !defined(__PRODADLL_PASS_1__) && !defined(__PRODADLL_PASS_2__) && !defined( __PRODADLL_TYPEDEF__)
@@ -60,8 +63,8 @@
 #define PRODANGDLL_FILENAME_SIZE           258
 #define PRODANGDLL_TRANSFER_SIZE             2
 #define PRODANGDLL_VALUETEXT_SIZE          258
-#define PRODANGDLL_SERIALNUMBER_SIZE      32
-#define PRODANGDLL_SERIALNUMBER_SIZE_LSN   1002
+#define PRODANGDLL_SERIALNUMBER_SIZE        32
+#define PRODANGDLL_SERIALNUMBER_SIZE_LSN  1002
 #define PRODANGDLL_COMMENT_SIZE            258
 #define PRODANGDLL_MDTIME_SIZE              24
 #define PRODANGDLL_CRTIME_SIZE              24
@@ -71,20 +74,20 @@
 #define GETTESTSTEPS_ORDERBY_TEST_ORDER     1 // used for function GetTestSteps_orderby
 
 
-typedef INT32 RetVal;	// Standard return value type
+typedef INT32 RetVal;       // Standard return value type
 
-typedef INT32 dbHandle;	// Context Handle type
+typedef INT32 dbHandle;     // Context Handle type
 
 typedef char cdbID[ PRODANGDLL_CDBID_SIZE ];
             // Character-reprsentation for database ID's also usable in SPS software
-						// This will cause a little bit overhead in the DLL but has the advantage to use high numbered IDs
-						// To signal an unknown id, the string "-1" is used. This refers to the row with id -1 in the corresponding
-						// table
+            // This will cause a little bit overhead in the DLL but has the advantage to use high numbered IDs
+            // To signal an unknown id, the string "-1" is used. This refers to the row with id -1 in the corresponding
+            // table
 
 typedef INT32 idbID;	// Integer-representation database ID's used for tables with small ID's as STATUS, RELEASE ...
-						// used to avoid overhead in tables where never high number will be used
-						// To signal an unknown id, the number -1 is used. This refers to the row with id -1 in the corresponding
-						// table
+            // used to avoid overhead in tables where never high number will be used
+            // To signal an unknown id, the number -1 is used. This refers to the row with id -1 in the corresponding
+            // table
 
             // set Calltype for functions
 #define __PRODADLL_CALLTYPE__          __stdcall
@@ -103,9 +106,9 @@ typedef INT32 idbID;	// Integer-representation database ID's used for tables wit
 // Language data handling
 
 typedef struct LanguageData {
-	idbID	id;				// Id of record
-	char	isoCode[ PRODANGDLL_ISOCODE_SIZE ];	// Iso Code (en,de,…)
-	char	name[ PRODANGDLL_LANGUAGEDATA_NAME_SIZE ];		// Descriptional name (English)
+  idbID	id;				// Id of record
+  char  isoCode[ PRODANGDLL_ISOCODE_SIZE ];	// Iso Code (en,de,…)
+  char  name[ PRODANGDLL_LANGUAGEDATA_NAME_SIZE ];		// Descriptional name (English)
 } * LanguageDataPtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -115,151 +118,151 @@ typedef struct LanguageData {
 
 typedef struct OpaqueData
 {
-	cdbID	id;				// Id of record
-	idbID	mimeTypeId;		// Id of associated mime type
-	int		binLength;		// Length of binary data
-	void 	*binary;		// Pointer to binary data
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];// Translated description
+  cdbID id;                                         // Id of record
+  idbID mimeTypeId;                                 // Id of associated mime type
+  int   binLength;                                  // Length of binary data
+  void  *binary;                                    // Pointer to binary data
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *OpaqueDataPtr;
 
 typedef struct MimeType {
-	idbID	id;					// Id of record
-	char	mimeType[ PRODANGDLL_MIMETYPE_SIZE ];		// Mimetype (image/jpeg)
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  char  mimeType[ PRODANGDLL_MIMETYPE_SIZE ];       // Mimetype (image/jpeg)
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *MimeTypePtr;
 
 typedef struct UnitData {
-	idbID	id;					// Id of record
-	char	unitName[ PRODANGDLL_UNITNAME_SIZE ];		// Name of unit
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last changed by user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  char  unitName[ PRODANGDLL_UNITNAME_SIZE ];       // Name of unit
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last changed by user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } * UnitDataPtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // System handling
 
 typedef struct Identification {
-	idbID	processId;		// This process
-	idbID	systemId;		// This system
-	idbID	processStepId;	// The process step id
-	idbID	wabcoPartId;	// The Wabco part id
+  idbID processId;                                  // This process
+  idbID systemId;                                   // This system
+  idbID processStepId;                              // The process step id
+  idbID wabcoPartId;                                // The Wabco part id
 }  *IdentificationPtr;
 
 
 
 typedef struct System {
-	idbID	id;			// Id of Record
-	char	name[ PRODANGDLL_SYSTEM_NAME_SIZE ];	// Name of system
+  idbID id;                                         // Id of Record
+  char  name[ PRODANGDLL_SYSTEM_NAME_SIZE ];        // Name of system
 } *SystemPtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Process handling
 
 typedef struct WabcoPart {
-	idbID	id;					// Id of record
-	idbID	workCenterId;		// Id of work center
-	cdbID	contentId;			// Id of binary data
-	cdbID	previewId;			// Id of preview for above binary
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last changed by user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	productName[ PRODANGDLL_PRODUCTNAME_SIZE ];	// Name of the product
-	char	wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ];	// The Wabco Number
+  idbID id;                                         // Id of record
+  idbID workCenterId;                               // Id of work center
+  cdbID contentId;                                  // Id of binary data
+  cdbID previewId;                                  // Id of preview for above binary
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last changed by user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  productName[ PRODANGDLL_PRODUCTNAME_SIZE ]; // Name of the product
+  char  wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ]; // The Wabco Number
 } *WabcoPartPtr;
 
 
 typedef struct Process {
-	idbID	id;					// Id of record
-	idbID	productionLineId;	// Id of production line
-	idbID	releaseId;			// Id of release status
-	cdbID	contentId;			// Id of binary data
-	cdbID	previewId;			// Id of preview for binary
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason for last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change by user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID productionLineId;                           // Id of production line
+  idbID releaseId;                                  // Id of release status
+  cdbID contentId;                                  // Id of binary data
+  cdbID previewId;                                  // Id of preview for binary
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason for last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change by user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *ProcessPtr;
 
 
 typedef struct ProcessStep {
-	idbID	id;					// Id of record
-	idbID	processId;			// Id of the process
-	idbID	systemId;			// Id of the system record
-	idbID	releaseId; 			// Id of release status
-	int		processSequence;	// Process sequence number
-	double	limitYellow;		// ‘Yellow’ warning level
-	double	limitRed;			// ‘red’ warning level
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	filename[ PRODANGDLL_FILENAME_SIZE ];		// A Filename
-	char	transfer[ PRODANGDLL_TRANSFER_SIZE ];		// Transfer
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID processId;                                  // Id of the process
+  idbID systemId;                                   // Id of the system record
+  idbID releaseId;                                  // Id of release status
+  int   processSequence;                            // Process sequence number
+  double  limitYellow;                              // ‘Yellow’ warning level
+  double  limitRed;                                 // ‘red’ warning level
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  filename[ PRODANGDLL_FILENAME_SIZE ];       // A Filename
+  char  transfer[ PRODANGDLL_TRANSFER_SIZE ];       // Transfer
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *ProcessStepPtr;
 
 
 typedef struct ProcessStepParam {
-	idbID	id;					// Id of record
-	idbID	processStepId;		// Id of process step record
-	idbID	unitId;				// Id of unit record
-	cdbID	contentId;			// Id of binary data
-	cdbID	previewId;			// Id of preview for above binary
-	double	value;				// The Value
-	char	valueText[ PRODANGDLL_VALUETEXT_SIZE ];		// Additional value as text
-	int		paramSequence;		// The parameter sequence number
-	int		history;			// History flag
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID processStepId;                              // Id of process step record
+  idbID unitId;                                     // Id of unit record
+  cdbID contentId;                                  // Id of binary data
+  cdbID previewId;                                  // Id of preview for above binary
+  double  value;                                    // The Value
+  char  valueText[ PRODANGDLL_VALUETEXT_SIZE ];     // Additional value as text
+  int   paramSequence;                              // The parameter sequence number
+  int   history;                                    // History flag
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *ProcessStepParamPtr;
 
 
 typedef struct TestStep {
-	idbID	id;					// Id of record
-	idbID	processStepId;		// Id of process step record
-	int		testSequence;		// Sequence or order
-  int		testOrder;			// Sequence or order
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID processStepId;                              // Id of process step record
+  int   testSequence;                               // Sequence or order
+  int   testOrder;                                  // Sequence or order
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *TestStepPtr;
 
 typedef struct TestStepParam {
-	idbID	id;					// Id of record
-	idbID	testStepId;			// Id of test step record
-	idbID	unitId;				// Id of unit
-	cdbID	contentId;			// Id of binary data
-	cdbID	previewId;			// Id of preview for above binary
-	double	value;				// The value
-	char	valueText[ PRODANGDLL_VALUETEXT_SIZE ];		// Additional value as text
-	int		paramSequence;		// The sequence number
-	int		history;			// (Old) History flag
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason for last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date iof last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID testStepId;                                 // Id of test step record
+  idbID unitId;                                     // Id of unit
+  cdbID contentId;                                  // Id of binary data
+  cdbID previewId;                                  // Id of preview for above binary
+  double  value;                                    // The value
+  char  valueText[ PRODANGDLL_VALUETEXT_SIZE ];     // Additional value as text
+  int   paramSequence;                              // The sequence number
+  int   history;                                    // (Old) History flag
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason for last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date iof last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *TestStepParamPtr;
 
 typedef struct TestValue {
-	idbID	id;					// Id of record
-	idbID	testStepId;			// Id of test step record
-	idbID	releaseId;			// Id of release status
-	idbID	unitId;				// Id of unit record
-	cdbID	contentId;			// Id of binary data
-	cdbID	previewId;			// Id of preview for above binary
-	double	maximum;			// Maximum value
-	double	minimum;			// Minimum value
-	char	valueText[ PRODANGDLL_VALUETEXT_SIZE ];		// Additional value as text
-	int		testValueSequence;	// Sequence of record
-	int		history;			// (Old) history flag
-	char	mdReason[ PRODANGDLL_MDREASON_SIZE ];		// Reason of last change
-	char	mdUser[ PRODANGDLL_MDUSER_SIZE ];			// Last change user
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  idbID testStepId;                                 // Id of test step record
+  idbID releaseId;                                  // Id of release status
+  idbID unitId;                                     // Id of unit record
+  cdbID contentId;                                  // Id of binary data
+  cdbID previewId;                                  // Id of preview for above binary
+  double  maximum;                                  // Maximum value
+  double  minimum;                                  // Minimum value
+  char  valueText[ PRODANGDLL_VALUETEXT_SIZE ];     // Additional value as text
+  int   testValueSequence;                          // Sequence of record
+  int   history;                                    // (Old) history flag
+  char  mdReason[ PRODANGDLL_MDREASON_SIZE ];       // Reason of last change
+  char  mdUser[ PRODANGDLL_MDUSER_SIZE ];           // Last change user
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *TestValuePtr;
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -267,96 +270,94 @@ typedef struct TestValue {
 // The related tables can use high numbered ID's so all structures contain cdbID types for their ID's
 
 typedef struct Product {
-	cdbID	id;					// Id of record
-	idbID	wabcoPartId;		// Id of Wabco Part record
-	char	serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE ];	// Serial number
-	char	comment[ PRODANGDLL_COMMENT_SIZE ];		// A comment
-	int		individual;			// Individual flag
-	idbID	crProcessStepId;	// Id of creating process step
-	idbID	mdProcessStepId;	// Id of modifying process step
-	char	crTime[ PRODANGDLL_CRTIME_SIZE ];			// Date of creation
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
+  cdbID id;                                         // Id of record
+  idbID wabcoPartId;                                // Id of Wabco Part record
+  char  serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE ]; // Serial number
+  char  comment[ PRODANGDLL_COMMENT_SIZE ];         // A comment
+  int   individual;                                 // Individual flag
+  idbID crProcessStepId;                            // Id of creating process step
+  idbID mdProcessStepId;                            // Id of modifying process step
+  char  crTime[ PRODANGDLL_CRTIME_SIZE ];           // Date of creation
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
 } *ProductPtr;
 
-typedef struct Product_lsn { // Product with long serial number
-	cdbID	id;					// Id of record
-	idbID	wabcoPartId;		// Id of Wabco Part record
-	char	serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ];	// Serial number (Long Serial Number)
-	char	comment[ PRODANGDLL_COMMENT_SIZE ];		// A comment
-	int		individual;			// Individual flag
-	idbID	crProcessStepId;	// Id of creating process step
-	idbID	mdProcessStepId;	// Id of modifying process step
-	char	crTime[ PRODANGDLL_CRTIME_SIZE ];			// Date of creation
-	char	mdTime[ PRODANGDLL_MDTIME_SIZE ];			// Date of last change
+typedef struct Product_lsn {                        // Product with long serial number
+  cdbID id;                                         // Id of record
+  idbID wabcoPartId;                                // Id of Wabco Part record
+  char  serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ]; // Serial number (Long Serial Number)
+  char  comment[ PRODANGDLL_COMMENT_SIZE ];         // A comment
+  int   individual;                                 // Individual flag
+  idbID crProcessStepId;                            // Id of creating process step
+  idbID mdProcessStepId;                            // Id of modifying process step
+  char  crTime[ PRODANGDLL_CRTIME_SIZE ];           // Date of creation
+  char  mdTime[ PRODANGDLL_MDTIME_SIZE ];           // Date of last change
 } *Product_lsnPtr;
-
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // Result handling
 
 typedef struct ProcessResult {
-	cdbID	id;				// Id of record
-	cdbID	productId;		// Id of product record
-	idbID	processId;		// Id of process record
-	idbID	statusId;		// The status
-	char	startTime[ PRODANGDLL_STARTTIME_SIZE ];	// Start of process
-	char	endTime[ PRODANGDLL_ENDTIME_SIZE ]; 	// End of process
+  cdbID id;                                         // Id of record
+  cdbID productId;                                  // Id of product record
+  idbID processId;                                  // Id of process record
+  idbID statusId;                                   // The status
+  char  startTime[ PRODANGDLL_STARTTIME_SIZE ];     // Start of process
+  char  endTime[ PRODANGDLL_ENDTIME_SIZE ];         // End of process
 } *ProcessResultPtr;
 
 
 typedef struct ProcessStepResult {
-	cdbID	id;					// Id fo record
-	cdbID	processResultId;	// Id of process result
-	idbID	processStepId;		// id of process step
-	idbID	statusId;			// Status
-	idbID	operatorId;			// Id of Operator (not a foreign key!)
-	char	startTime[ PRODANGDLL_STARTTIME_SIZE ];		// Start of process step
-	char	endTime[ PRODANGDLL_ENDTIME_SIZE ];		// End of process step
+  cdbID id;                                         // Id fo record
+  cdbID processResultId;                            // Id of process result
+  idbID processStepId;                              // id of process step
+  idbID statusId;                                   // Status
+  idbID operatorId;                                 // Id of Operator (not a foreign key!)
+  char  startTime[ PRODANGDLL_STARTTIME_SIZE ];     // Start of process step
+  char  endTime[ PRODANGDLL_ENDTIME_SIZE ];         // End of process step
 } *ProcessStepResultPtr;
 
 
 typedef struct TestStepResult {
-	cdbID	id;						// Id of record
-	cdbID	processStepResultId;	// Id of process step result
-	idbID	testStepId;				// Id of test step
-	idbID	statusId;				// Status
+  cdbID id;                                         // Id of record
+  cdbID processStepResultId;                        // Id of process step result
+  idbID testStepId;                                 // Id of test step
+  idbID statusId;                                   // Status
 } *TestStepResultPtr;
 
 
 typedef struct TestValueResult {
-	cdbID	id;					// Id of record
-	cdbID	testStepResultId;	// Id of test step result
-	idbID	testValueId;		// Id of test value
-	double	result;				// Result value
-	idbID	statusId;			// Status
-	cdbID	contentId;			// Id of binary result
+  cdbID id;                                         // Id of record
+  cdbID testStepResultId;                           // Id of test step result
+  idbID testValueId;                                // Id of test value
+  double  result;                                   // Result value
+  idbID statusId;                                   // Status
+  cdbID contentId;                                  // Id of binary result
 } *TestValueResultPtr;
 
 
 typedef struct ProductionLine {
-	idbID	id;					// Id of record
-	char	description[ PRODANGDLL_DESCRIPTION_SIZE ];	// Translated description
+  idbID id;                                         // Id of record
+  char  description[ PRODANGDLL_DESCRIPTION_SIZE ]; // Translated description
 } *ProductionLinePtr;
 
 typedef struct Product_Component {
-	Product_lsnPtr product;
-	Product_lsnPtr component;
-	ProcessStepResultPtr processStepResult;
-	int qty;
-	int level;
+  Product_lsnPtr product;
+  Product_lsnPtr component;
+  ProcessStepResultPtr processStepResult;
+  int qty;
+  int level;
 } *Product_ComponentPtr;
 
-
 typedef struct Product_Component_wnr_snr {
-	char	product_wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ];		// Product WABCO Number
-	char	product_serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ];	// Product Serial number
-	char	component_wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ];	// Component WABCO Number
-	char	component_serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ];	// Component Serial number
-	cdbID	processStepResultId;									// process_step_result.id
-	int qty;
-	int level;
-
+  char  product_wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ];           // Product WABCO Number
+  char  product_serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ];     // Product Serial number
+  char  component_wabcoNumber[ PRODANGDLL_WABCONUMBER_SIZE ];         // Component WABCO Number
+  char  component_serialNumber[ PRODANGDLL_SERIALNUMBER_SIZE_LSN ];   // Component Serial number
+  cdbID processStepResultId;                                          // process_step_result.id
+  int qty;
+  int level;
 } *Product_Component_wnr_snrPtr;
+
 
 // end of struct definitions
 #endif // !defined(__PRODADLL_EXPORT__) || defined(__PRODADLL_PASS_1__)
@@ -389,8 +390,7 @@ typedef struct Product_Component_wnr_snr {
 // #define __NAMESPACE__( _a )   ProdaNG_DLL::##_a
 #endif
 
-#endif //  #if defined(__PRODADLL_PASS_2__)
-#endif //  #if defined(__PRODADLL_EXPORT__)
+#endif
 
 //******************************************************************************
 //******************************************************************************
@@ -438,13 +438,13 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( Login )( char*     user,
 
 // SetPreference
 // IN
-//	handle
-//  key			Name of preference to set
-//  value		New value of preference
+//  handle
+//  key         Name of preference to set
+//  value       New value of preference
 //
 // Set one of the preferences named
-// RETRYCOUNT		(Number >= 0)
-// RETRYWAIT		(Number >= 0 Seconds)
+// RETRYCOUNT   (Number >= 0)
+// RETRYWAIT    (Number >= 0 Seconds)
 // RETRYISRECONNECT (Number False = 0, True != 0 )
 //
 
@@ -461,8 +461,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( Logout )( dbHandle handle );
 
 // SetDBId
 // IN
-//	handle
-//  dbId				Database Id
+//  handle
+//  dbId        Database Id
 //
 // Overwrite the default DBId from preference DBID (Number) for the current session
 
@@ -471,7 +471,7 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetDBId )( dbHandle handle,
 
 // FreeData
 // IN
-// 	data   pointer to allocated data
+//  data   pointer to allocated data
 //
 // function is required because of different memory management
 
@@ -479,7 +479,7 @@ __FUNCTYPE_1__ void __FUNCTYPE_2__( FreeData )( void **data );
 
 // FreeStructArray
 // IN
-// 	arrayOfPtrs		Array of structure pointers returned by several functions
+//  arrayOfPtrs Array of structure pointers returned by several functions
 //
 // All returned structure arrays can be freed using this function
 
@@ -487,7 +487,7 @@ __FUNCTYPE_1__ void __FUNCTYPE_2__( FreeStructArray )( void **arrayOfPtrs );
 
 // GetLastErrorMsg
 // IN
-// 	handle
+//  handle
 //
 // Returns the last error message caused by an ORACLE Error
 // This text points to static area in the handle and will be overriden
@@ -498,10 +498,10 @@ __FUNCTYPE_1__ char * __FUNCTYPE_2__( GetLastErrorMsg )( dbHandle handle );
 
 // GetDatabaseTime
 // IN
-// 	handle
+//  handle
 //
 // OUT
-//	timeBuf	A character array sized at least 24 chars to hold the returned system time
+//  timeBuf     A character array sized at least 24 chars to hold the returned system time
 //
 // Queries the database for the actual date and time
 
@@ -512,10 +512,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetDatabaseTime )( dbHandle handle,
 // Language data handling
 // GetLanguages
 // IN
-//	handle
+//  handle
 // OUT
-//	languages		Array of LanguageDataPtr( alloc by callee, use FreeStructArray() to free)
-//	countPtr		Size of above array
+//  languages   Array of LanguageDataPtr( alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all languages known to db as array (ordered alphabetical) of structure pointers
 // and the size of the array
@@ -526,8 +526,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetLanguages )( dbHandle handle,
 
 // SetLanguage
 // IN
-//	handle
-//  languageId		Id of language
+//  handle
+//  languageId  Id of language
 //
 // Set current language for this application while running
 // All label translations(in and out) will be according to this language
@@ -546,11 +546,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetLanguage )( dbHandle handle,
 
 // GetOpaqueData
 // IN
-//	handle
-//  opaqueId		Id of record
+//  handle
+//  opaqueId    Id of record
 //
 // OUT
-//	opaqueData		Record (alloc and free by caller)
+//  opaqueData  Record (alloc and free by caller)
 //
 // Get record from OpaqueData table
 
@@ -560,8 +560,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetOpaqueData )( dbHandle handle,
 
 // NewOpaqueData
 // IN
-//	handle
-//  opaqueData		New record content (alloc and free by caller)
+//  handle
+//  opaqueData  New record content (alloc and free by caller)
 //
 // Create a new opaque data record, Updated fields in opaqueData on return.
 // ERROR_MORE_DATA returned in case MAXBLOBSIZE is exceeded.
@@ -571,8 +571,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewOpaqueData )( dbHandle handle,
 
 // SetOpaqueData
 // IN
-//	handle
-//  opaqueData		Record to update (alloc and free by caller)
+//  handle
+//  opaqueData  Record to update (alloc and free by caller)
 //
 // Update an existing opaque data record
 // ERROR_MORE_DATA returned in case MAXBLOBSIZE is exceeded.
@@ -582,8 +582,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetOpaqueData )( dbHandle handle,
 
 // DeleteOpaqueData
 // IN
-//	handle
-//  opaqueId		Id of record to delete
+//  handle
+//  opaqueId    Id of record to delete
 //
 // Deletes an existing opaque data record identified by its ID
 
@@ -592,11 +592,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteOpaqueData )( dbHandle handle,
 
 // GetOpaqueDataResult
 // IN
-//	handle
-//  opaqueId		Id of record
+//  handle
+//  opaqueId    Id of record
 //
 // OUT
-//	opaqueData		Record (alloc and free by caller)
+//  opaqueData  Record (alloc and free by caller)
 //
 // Get record from OpaqueDataResult table
 
@@ -606,8 +606,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetOpaqueDataResult )( dbHandle handle,
 
 // NewOpaqueDataResult
 // IN
-//	handle
-//  opaqueData		New record content (alloc and free by caller)
+//  handle
+//  opaqueData  New record content (alloc and free by caller)
 //
 // Create a new opaque data result record, Updated fields in opaqueData on return.
 // ERROR_MORE_DATA returned in case MAXBLOBSIZE is exceeded.
@@ -617,8 +617,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewOpaqueDataResult )( dbHandle handle,
 
 // SetOpaqueDataResult
 // IN
-//	handle
-//  opaqueData		Record to update (alloc and free by caller)
+//  handle
+//  opaqueData  Record to update (alloc and free by caller)
 //
 // Update an existing opaque data result record
 // ERROR_MORE_DATA returned in case MAXBLOBSIZE is exceeded.
@@ -628,8 +628,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetOpaqueDataResult )( dbHandle handle,
 
 // DeleteOpaqueDataResult
 // IN
-//	handle
-//  opaqueId		Id of record to delete
+//  handle
+//  opaqueId    Id of record to delete
 //
 // Deletes an existing opaque data record reaslt identified by its ID
 
@@ -639,10 +639,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteOpaqueDataResult )( dbHandle handle,
 
 // GetMimeTypes
 // IN
-//	handle
+//  handle
 // OUT
-//	mimeTypes		Array of MimeTypePtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr		Size of above array
+//  mimeTypes   Array of MimeTypePtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all mimetypes known to db as array (ordered alphabetical) of structure pointers
 // and the size of the array
@@ -652,10 +652,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetMimeTypes )( dbHandle  handle,
                                                       int*      countPtr );
 // GetUnits
 // IN
-//	handle
+//  handle
 // OUT
-//	units		Array of UnitDataPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  units       Array of UnitDataPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all units known to db as array (ordered by name) of structure pointers
 // and the size of the array
@@ -671,13 +671,13 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetUnits )( dbHandle handle,
 
 // IdentifyMe
 // IN
-//	handle
-//	systemName			Name of this system
-//	wabcoNumber			Wabco number produced by this system
-//	processSequence		Process sequence number of this system (specify 0 as Optional)
-//	processId			Process id of this system (specify 0 as Optional)
+//  handle
+//  systemName  Name of this system
+//  wabcoNumber Wabco number produced by this system
+//  processSequence Process sequence number of this system (specify 0 as Optional)
+//  processId   Process id of this system (specify 0 as Optional)
 // OUT
-//	myIdent				Record identifying this system (alloc and free by caller)
+//  myIdent     Record identifying this system (alloc and free by caller)
 //
 // Identifies this system from given input parameters and returns an ident record
 // ERROR_NO_DATA is returned if insufficient data supplied or ERROR_MORE_DATA if the system could not
@@ -686,17 +686,17 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetUnits )( dbHandle handle,
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( IdentifyMe )( dbHandle handle,
                                                     char*    systemName,
                                                     char*    wabcoNumber,
-			                                              int      processSequence,
+                                                    int      processSequence,
                                                     idbID    processId,
                                                     __NAMESPACE__( IdentificationPtr ) myIdent );
 
 // GetSystem
 // IN
-//	handle
-//  systemId	Id of system
+//  handle
+//  systemId    Id of system
 //
 // OUT
-//	system		Record (alloc and free by caller)
+//  system      Record (alloc and free by caller)
 //
 // Get record from system table
 
@@ -707,10 +707,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetSystem )( dbHandle handle,
 
 // startIdleTime
 // IN
-//	handle
-//  systemId		Id of system
-//  idleReasonId	Reason of idle time
-//	comment			Comment
+//  handle
+//  systemId    Id of system
+//  idleReasonId  Reason of idle time
+//  comment     Comment
 //
 // Marks start of idle phase
 
@@ -721,8 +721,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( StartIdleTime )( dbHandle handle,
 
 // endIdleTime
 // IN
-//	handle
-//  systemId	Id of system
+//  handle
+//  systemId    Id of system
 //
 // Marks end of idle phase - this completes the last idletime record created
 // by startIdleTime()
@@ -733,10 +733,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( EndIdleTime )( dbHandle handle,
 
 // GetSystems
 // IN
-//	handle
+//  handle
 // OUT
-//	systems		Array of SystemPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  systems     Array of SystemPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all systems known to db as array (ordered alphabetical) of structure pointers
 // and the size of the array
@@ -744,54 +744,54 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetSystems )( dbHandle handle,
                                                     __NAMESPACE__( SystemPtr ) **systems,
                                                     int*     countPtr );
 
+
 /////////////////////////////////////////////////////////////////////////////////////
 // UpdateWabcoNumber
 // IN
-//	handle
-//	WabcoNumber is a “old” WABCO number which we want to change.
-//	serialNumber is a serial number for product for which we want to change WABCO number.
-//	newWabcoNumber is a “new” WABCO number
+//  handle
+//  WabcoNumber     is a “old” WABCO number which we want to change.
+//  serialNumber    is a serial number for product for which we want to change WABCO number.
+//  newWabcoNumber  is a “new” WABCO number
 //
 // Updates WABCO number for given product (identified by WabcoNumber and serialNumber), set newWabcoNumber
 //
-// Returns the standard error codes 
+// Returns the standard error codes
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( UpdateWabcoNumber )( dbHandle handle, char *WabcoNumber, char *SerialNumber, char *newWabcoNumber );
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////
 // GetProductionLine
 // IN
 //  handle
-//  productionLineID		Id of productionLine
+//  productionLineID  Id of productionLine
 //
 // OUT
-//	productionLine		Record (alloc and free by caller)
+//  productionLine    Record (alloc and free by caller)
 //
-// Get record from productionLine table 
+// Get record from productionLine table
 //
 // Returns the standard error codes
 
-__FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProductionLine )( dbHandle handle, 
-                                      idbID ProductionLineId, 
+__FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProductionLine )( dbHandle handle,
+                                      idbID ProductionLineId,
                                       __NAMESPACE__( ProductionLinePtr ) productionline );
 
 /////////////////////////////////////////////////////////////////////////////////////
 // GetProductionLines
 // IN
-//	Handle
+//  Handle
 // OUT
-//	productionlines	Array of ProductionLinePtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  productionlines   Array of ProductionLinePtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr          Size of above array
 //
-// Returns all productionlines known to db as array (ordered by id) of structure pointers 
+// Returns all productionlines known to db as array (ordered by id) of structure pointers
 // and the size of the array
 //
 // Returns the standard error codes
 
-__FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProductionLines )( dbHandle handle, 
-                                      __NAMESPACE__( ProductionLinePtr ) **productionlines, 
+__FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProductionLines )( dbHandle handle,
+                                      __NAMESPACE__( ProductionLinePtr ) **productionlines,
                                       int *countPtr);
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -799,11 +799,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProductionLines )( dbHandle handle,
 
 // GetWabcoPart
 // IN
-//	handle
-//  wabcoPartId	Id of wabco part
+//  handle
+//  wabcoPartId Id of wabco part
 //
 // OUT
-//	wabcoPart		Record (alloc and free by caller)
+//  wabcoPart   Record (alloc and free by caller)
 //
 // Get record from wabcopart table
 
@@ -813,24 +813,24 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetWabcoPart )( dbHandle handle,
 
 // GetWabcoPart_wabcoNumber
 // IN
-//	handle
-//  wabcoNumber	is WABCO number
+//  handle
+//  wabcoNumber is WABCO number
 //
 // OUT
-//	wabcoPart		Record (alloc and free by caller)
+//  wabcoPart   Record (alloc and free by caller)
 //
 // Get record from wabcopart table
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetWabcoPart_wabcoNumber )( dbHandle handle,
-                                                      char*    wabcoNumber,
-                                                      __NAMESPACE__( WabcoPartPtr ) wabcoPart );
+                                                                  char*    wabcoNumber,
+                                                                __NAMESPACE__( WabcoPartPtr ) wabcoPart );
 
 // GetWabcoParts
 // IN
-//	handle
+//  handle
 // OUT
-//	wabcoParts	Array of WabcoPartPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  wabcoParts  Array of WabcoPartPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all WABCO parts known to db as array (ordered alphabetical) of structure pointers
 // and the size of the array
@@ -841,10 +841,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetWabcoParts )( dbHandle handle,
 
 // NewWabcoPart
 // IN
-//	handle
+//  handle
 //
 // OUT
-//	wabcoPart		Record (alloc and free by caller)
+//  wabcoPart   Record (alloc and free by caller)
 //
 // Get record from wabcopart table
 
@@ -853,9 +853,9 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewWabcoPart )( dbHandle handle,
 
 // NewWabcoPart_Process
 // IN
-//	handle
-//	processId
-//	wabcoPartId
+//  handle
+//  processId
+//  wabcoPartId
 //
 // Connect Process to Wabcopart
 
@@ -864,11 +864,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewWabcoPart_Process )( dbHandle handle,
 
 // GetProcess
 // IN
-//	handle
-//  processId		Id of process
+//  handle
+//  processId   Id of process
 //
 // OUT
-//	process			Record (alloc and free by caller)
+//  process     Record (alloc and free by caller)
 //
 // Get record from process table
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcess )( dbHandle handle,
@@ -879,10 +879,10 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcess )( dbHandle handle,
 
 // GetProcesses
 // IN
-//	handle
+//  handle
 // OUT
-//	processes	Array of ProcessPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  processes   Array of ProcessPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all processes known to db as array (ordered by id) of structure pointers
 // and the size of the array
@@ -894,11 +894,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcesses )( dbHandle handle,
 
 // GetWabcoPartProcesses
 // IN
-//	handle
-//  wabcoPartId	Id of Wabco Part
+//  handle
+//  wabcoPartId Id of Wabco Part
 // OUT
-//	processes	Array of ProcessPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  processes   Array of ProcessPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all processes known for the given Wabco Part ID as array (ordered by id) of structure pointers
 // and the size of the array
@@ -911,11 +911,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetWabcoPartProcesses )( dbHandle handle,
 
 // GetProcessStep
 // IN
-//	handle
-//  processStepId	Id of process step
+//  handle
+//  processStepId Id of process step
 //
 // OUT
-//	processStep		Record (alloc and free by caller)
+//  processStep   Record (alloc and free by caller)
 //
 // Get record from process step table
 
@@ -926,11 +926,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessStep )( dbHandle handle,
 
 // GetProcessSteps
 // IN
-//	handle
-//  processId		Id of process
+//  handle
+//  processId     Id of process
 // OUT
-//	processSteps	Array of ProcessStepPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr		Size of above array
+//  processSteps  Array of ProcessStepPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr      Size of above array
 //
 // Returns all process steps for this process as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -942,11 +942,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessSteps )( dbHandle handle,
 /*
 // NewProcessStep
 // IN
-//	handle
-//	processStep		Record (alloc and free by caller)
+//  handle
+//  processStep Record (alloc and free by caller)
 //
 // OUT
-//	processStep		Record (alloc and free by caller)
+//  processStep Record (alloc and free by caller)
 //
 // Get record from process step table
 
@@ -955,11 +955,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProcessStep )( dbHandle handle,
 
 // SetProcessStep
 // IN
-//	handle
-//	processStep		Record (alloc and free by caller)
+//  handle
+//  processStep Record (alloc and free by caller)
 //
 // OUT
-//	processStep		Record (alloc and free by caller)
+//  processStep Record (alloc and free by caller)
 //
 // Get record from process step table
 
@@ -968,11 +968,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetProcessStep )( dbHandle handle,
 
 // DeleteProcessStep
 // IN
-//	handle
-//	processStep		Record (alloc and free by caller)
+//  handle
+//  processStep Record (alloc and free by caller)
 //
 // OUT
-//	processStep		Record (alloc and free by caller)
+//  processStep Record (alloc and free by caller)
 //
 // Get record from process step table
 
@@ -981,11 +981,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteProcessStep )( dbHandle handle,
 */
 // GetProcessStepParams
 // IN
-//	handle
-//  processStepID		Id of process step
+//  handle
+//  processStepID     Id of process step
 // OUT
-//	processStepParams	Array of ProcessStepPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr			Size of above array
+//  processStepParams Array of ProcessStepPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr          Size of above array
 //
 // Returns all process step parameters for this process step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -997,11 +997,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessStepParams )( dbHandle handle,
 
 // NewProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 //OUT
-//	processStepParams	ProcessStepPtr
+//  processStepParams ProcessStepPtr
 //
 // Creates new Process Step Parameter
 
@@ -1010,8 +1010,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProcessStepParam )( dbHandle handle,
 
 // SetProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 // Changes Process Step Parameter
 
@@ -1020,8 +1020,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetProcessStepParam )( dbHandle handle,
 
 // DeleteProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 // Changes Process Step Parameter
 
@@ -1031,11 +1031,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteProcessStepParam )( dbHandle handle,
 
 // GetTestSteps
 // IN
-//	handle
-//  processStepID		Id of process step
+//  handle
+//  processStepID Id of process step
 // OUT
-//	testSteps			Array of TestStepPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr			Size of above array
+//  testSteps     Array of TestStepPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr      Size of above array
 //
 // Returns all test steps for this process step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -1051,14 +1051,14 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestSteps )( dbHandle handle,
 /////////////////////////////////////////////////////////////////////////////////////
 // GetTestSteps_orderby
 // IN
-//	handle
-//  processStepID		Id of process step
+//  handle
+//  processStepID Id of process step
 // OUT
-//	testSteps			Array of TestStepPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr			Size of above array
-//  orderby				sort order, allowed values: GETTESTSTEPS_ORDERBY_TEST_SEQUENCE, GETTESTSTEPS_ORDERBY_TEST_ORDER
+//  testSteps     Array of TestStepPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr      Size of above array
+//  orderby       sort order, allowed values: GETTESTSTEPS_ORDERBY_TEST_SEQUENCE, GETTESTSTEPS_ORDERBY_TEST_ORDER
 //
-// Returns all test steps for this process step as array of structure pointers 
+// Returns all test steps for this process step as array of structure pointers
 // and the size of the array
 //
 // Returns the standard error codes and ERROR_INVALID_PARAMETER when "orderby" is not any of above allowed values
@@ -1068,18 +1068,18 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestSteps_orderby )( dbHandle handle,
                                                       idbID    processStepId,
                                                       __NAMESPACE__( TestStepPtr ) **testSteps,
                                                       int*     countPtr,
-													  int orderby );
+                            int orderby );
 
 
 
 // NewTestStep
 // IN
-//	handle
-//	testStep			TestStepPtr
+//  handle
+//  testStep    TestStepPtr
 //  releaseId
 // OUT
-//	testStep			TestStepPtr
-//	countPtr			Size of above array
+//  testStep    TestStepPtr
+//  countPtr    Size of above array
 //
 // Returns all test steps for this process step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -1091,11 +1091,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewTestStep )( dbHandle handle,
 
 // SetTestStep
 // IN
-//	handle
-//	testStep			TestStepPtr
+//  handle
+//  testStep    TestStepPtr
 // OUT
-//	testStep			TestStepPtr
-//	countPtr			Size of above array
+//  testStep    TestStepPtr
+//  countPtr    Size of above array
 //
 // Returns all test steps for this process step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -1106,11 +1106,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetTestStep )( dbHandle handle,
 
 // DeleteTestStep
 // IN
-//	handle
-//	testStep			TestStepPtr
+//  handle
+//  testStep    TestStepPtr
 // OUT
-//	testStep			TestStepPtr
-//	countPtr			Size of above array
+//  testStep    TestStepPtr
+//  countPtr    Size of above array
 //
 // Returns all test steps for this process step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -1121,11 +1121,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteTestStep )( dbHandle handle,
 
 // GetTestStepParams
 // IN
-//	handle
-//  testStepId			Id of test step
+//  handle
+//  testStepId      Id of test step
 // OUT
-//	testStepParams		Array of TestStepParamPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr			Size of above array
+//  testStepParams  Array of TestStepParamPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr        Size of above array
 //
 // Returns all test step parameters for this test step as array (ordered by sequence) of structure pointers
 // and the size of the array
@@ -1138,8 +1138,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestStepParams )( dbHandle handle,
 
 // NewProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 // Creates new Process Step Parameter
 
@@ -1148,8 +1148,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewTestStepParam )( dbHandle handle,
 
 // SetProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 // Changes Process Step Parameter
 
@@ -1158,8 +1158,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetTestStepParam )( dbHandle handle,
 
 // DeleteProcessStepParam
 // IN
-//	handle
-//	processStepParams	ProcessStepPtr
+//  handle
+//  processStepParams ProcessStepPtr
 //
 // Changes Process Step Parameter
 
@@ -1171,14 +1171,15 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteTestStepParam )( dbHandle handle,
 
 // GetTestValues
 // IN
-//	handle
-//  testStepId		Id of test step
+//  handle
+//  testStepId  Id of test step
 // OUT
-//	testValues		Array of TestStepParamPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr		Size of above array
+//  testValues  Array of TestStepParamPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr    Size of above array
 //
 // Returns all test values for this test step as array (ordered by sequence) of structure pointers
 // and the size of the array
+
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestValues )( dbHandle handle,
                                                        idbID    testStepId,
                                                        __NAMESPACE__( TestValuePtr ) **testValues,
@@ -1187,8 +1188,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestValues )( dbHandle handle,
 
 // NewTestValue
 // IN
-//	handle
-//  testValue		Test value record to add (alloc and free by caller)
+//  handle
+//  testValue Test value record to add (alloc and free by caller)
 //
 // Create a test value record with new values and mark the origin record as not-in-use-anymore
 
@@ -1198,8 +1199,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewTestValue )( dbHandle handle,
 
 // SetTestValue
 // IN
-//	handle
-//  testValue		Test value record to update (alloc and free by caller)
+//  handle
+//  testValue   Test value record to update (alloc and free by caller)
 //
 // Create a test value record with new values and mark the origin record as not-in-use-anymore
 
@@ -1209,8 +1210,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetTestValue )( dbHandle handle,
 
 // DeleteTestValue
 // IN
-//	handle
-//  testValue		Test value record to update (alloc and free by caller)
+//  handle
+//  testValue   Test value record to update (alloc and free by caller)
 //
 // Create a test value record with new values and mark the origin record as not-in-use-anymore
 
@@ -1224,8 +1225,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( DeleteTestValue )( dbHandle handle,
 
 // NewProduct
 // IN
-//	handle
-//  product		Product record filled with base data (alloc and free by caller)
+//  handle
+//  product     Product record filled with base data (alloc and free by caller)
 //
 // Create a new product record in db. Fields will be updated on return
 // In case product exists, ERROR_MORE_DATA is returned.
@@ -1234,15 +1235,15 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProduct )( dbHandle handle,
                                                     __NAMESPACE__( ProductPtr ) product );
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProduct_lsn )( dbHandle handle,
-                                                    __NAMESPACE__( Product_lsnPtr ) product );
+                                                        __NAMESPACE__( Product_lsnPtr ) product );
 
 // GetProduct
 // IN
-//	handle
-//  wabcoPartId		Wabco part id to search
-//  serialNumber	Serial number to search
+//  handle
+//  wabcoPartId   Wabco part id to search
+//  serialNumber  Serial number to search
 // OUT
-//  product			Product record found (alloc and free by caller)
+//  product       Product record found (alloc and free by caller)
 //
 // Get product record identified by the wabcoPartId and the serial number
 
@@ -1250,6 +1251,7 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct )( dbHandle handle,
                                                     idbID    wabcoPartId,
                                                     char*    serialNumber,
                                                     __NAMESPACE__( ProductPtr ) product );
+
 
 // GetProduct with Long Serial Number
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_lsn )( dbHandle handle,
@@ -1259,37 +1261,37 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_lsn )( dbHandle handle,
 
 // GetProduct_serialNumber
 // IN
-//	handle
-//  serialNumber	Serial number to search
+//  handle
+//  serialNumber  Serial number to search
 // OUT
-//  product			Product record found (alloc and free by caller)
+//  product       Product record found (alloc and free by caller)
 //
 // Get product record identified by the wabcoPartId and the serial number
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_serialNumber )( dbHandle handle,
-                                                    char*    serialNumber,
-                                                    __NAMESPACE__( Product_lsnPtr ) product );
+                                                                 char*    serialNumber,
+                                                                 __NAMESPACE__( Product_lsnPtr ) product );
 
 // GetProduct_productId
 // IN
-//	handle
-//  productId	product.id
+//  handle
+//  productId product.id
 // OUT
-//  product			Product record found (alloc and free by caller)
+//  product   Product record found (alloc and free by caller)
 //
 // Get product record identified by the wabcoPartId and the serial number
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_productId )( dbHandle handle,
-                                                    char*    productId,
-                                                    __NAMESPACE__( Product_lsnPtr ) product );
+                                                              char*    productId,
+                                                              __NAMESPACE__( Product_lsnPtr ) product );
 
 // GetProduct_wabcoNumber_serialNumber
 // IN
-//	handle
-//  wabcoPartId		Wabco part id to search
-//  serialNumber	Serial number to search
+//  handle
+//  wabcoPartId   Wabco part id to search
+//  serialNumber  Serial number to search
 // OUT
-//  product			Product record found (alloc and free by caller)
+//  product       Product record found (alloc and free by caller)
 //
 // Get product record identified by the wabcoPartId and the serial number
 
@@ -1300,8 +1302,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_wabcoNumber_serialNumber )( dbH
 
 // SetProduct
 // IN
-//	handle
-//  product			Product record to update (alloc and free by caller)
+//  handle
+//  product   Product record to update (alloc and free by caller)
 //
 // Update the product record with new values.
 
@@ -1314,11 +1316,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetProduct_lsn )( dbHandle handle,
 
 // GetNewestProduct
 // IN
-//	handle
-//  wabcoPartId		Wabco part id of product
+//  handle
+//  wabcoPartId Wabco part id of product
 // OUT
-//  product			Product record found (has to be allocated by caller)
-//	statusPtr		Status of query (used as in old DLL)
+//  product     Product record found (has to be allocated by caller)
+//  statusPtr   Status of query (used as in old DLL)
 //
 // Get newest product record identified by the wabcoPartId
 
@@ -1334,18 +1336,18 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetNewestProduct_lsn )( dbHandle handle,
 
 // GetNextSerialNumber
 // IN
-//	handle
-//  wabcoPartId		Wabco part id of product
+//  handle
+//  wabcoPartId   Wabco part id of product
 // OUT
-//  serialNumber	Next serial number to use (has to be allocated by caller)
-//	statusPtr		Status of query (used as in old DLL)
+//  serialNumber  Next serial number to use (has to be allocated by caller)
+//  statusPtr     Status of query (used as in old DLL)
 //
 // Get next serial number for a product identified by the wabcoPartId.
 // Only numeric serial numbers can be generated
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetNextSerialNumber )( dbHandle handle,
                                                              idbID    WabcoPartId,
-                                                             char*     serialNumber,
+                                                             char*    serialNumber,
                                                              int*     statusPtr );
 
 // AddComponent
@@ -1361,7 +1363,7 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( AddComponent )( dbHandle handle,
 
 // AddComponent
 // IN
-//	handle
+//  handle
 //  product_wabcoNumber, product_serialNumber - to identify product
 //  component_wabcoNumber, component_serialNumber - to identify component for product
 //
@@ -1369,16 +1371,16 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( AddComponent )( dbHandle handle,
 // In case product exists, ERROR_MORE_DATA is returned.
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( AddComponent_wabcoNumber_serialNumber )( dbHandle handle,
-                                                    char*    product_wabcoNumber,
-                                                    char*    product_serialNumber,
-                                                    char*    component_wabcoNumber,
-                                                    char*    component_serialNumber,
-													char*	 processStepResultId,
-													int qty);
+                                                    char* product_wabcoNumber,
+                                                    char* product_serialNumber,
+                                                    char* component_wabcoNumber,
+                                                    char* component_serialNumber,
+                                                    char* processStepResultId,
+                                                    int   qty);
 
 // GetProduct_ComponentList
 // IN
-//	handle
+//  handle
 //  product_component pointer to table of pointers with of product_component structure
 //
 // Create a new product record in db. Fields will be updated on return
@@ -1386,11 +1388,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( AddComponent_wabcoNumber_serialNumber )( d
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_ComponentList )( dbHandle handle,
                                                     __NAMESPACE__( Product_ComponentPtr ) **product_component,
-													int*     countPtr );
+                                                    int*     countPtr );
 
 // GetProduct_ComponentList
 // IN
-//	handle
+//  handle
 //  product_component_wnr_snr pointer to table of pointers with of Product_Component_wnr_snrPtr structure
 //
 // Create a new product record in db. Fields will be updated on return
@@ -1400,11 +1402,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProduct_ComponentList_wnr_snr )( dbHand
                                                     char*    wabcoNumber,
                                                     char*    serialNumber,
                                                     __NAMESPACE__( Product_Component_wnr_snrPtr ) **product_component_wnr_snr,
-													int*     countPtr );
+                                                    int*     countPtr );
 
 // FreeProduct_ComponentList
 // IN
-//	handle
+//  handle
 //  product_component - table of pointers with of product_component structure
 //
 // Create a new product record in db. Fields will be updated on return
@@ -1423,9 +1425,20 @@ __FUNCTYPE_1__ void __FUNCTYPE_2__( FreeProduct_ComponentList )(__NAMESPACE__( P
 // 5. Process results are set and checked including the process step result. This completes the chain.
 
 // NewProcessResult
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Result handling
+// The result handling functions are used in a chain.
+// 1. New records are created by using the New...() functions.
+// 2. Test value results are set and checked.
+// 3. Test step results are set and checked, including the test value results.
+// 4. Process step results are set and checked, including the test step results.
+// 5. Process results are set and checked including the process step result. This completes the chain.
+
+// NewProcessResult
 // IN
-//	handle
-//  processResult		Process result record filled with base data (alloc and free by caller)
+//  handle
+//  processResult Process result record filled with base data (alloc and free by caller)
 //
 // Create a new process result record in db. Fields will be updated on return
 
@@ -1434,11 +1447,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProcessResult )( dbHandle handle,
 
 // GetProcessResult
 // IN
-//	handle
-//  productId		Product id to search
-//  processId		Process id to search
+//  handle
+//  productId     Product id to search
+//  processId     Process id to search
 // OUT
-//  processResult	Process result record found (alloc and free by caller)
+//  processResult Process result record found (alloc and free by caller)
 //
 // Get process result record identified by the productId and processId
 
@@ -1449,8 +1462,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessResult )( dbHandle handle,
 
 // SetProcessResult
 // IN
-//	handle
-//  processResult	Process result record to update (alloc and free by caller)
+//  handle
+//  processResult Process result record to update (alloc and free by caller)
 //
 // Update the process result record with new values. Apply checks accoring statusId setting.
 // This call is the last in result chain after SetTestValueResult, SetTestStepResult and
@@ -1462,8 +1475,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetProcessResult )( dbHandle handle,
 
 // NewProcessStepResult
 // IN
-//	handle
-//  processStepResult		Process step result record filled with base data (alloc and free by caller)
+//  handle
+//  processStepResult Process step result record filled with base data (alloc and free by caller)
 //
 // Create a new process setp result record in db. Fields will be updated on return
 
@@ -1472,11 +1485,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewProcessStepResult )( dbHandle handle,
 
 // GetProcessStepResult
 // IN
-//	handle
-//  processResultId		Process result id to search
-//  processStepId		Process step id to search
+//  handle
+//  processResultId   Process result id to search
+//  processStepId     Process step id to search
 // OUT
-//  processStepResult	Process step result record found (alloc and free by caller)
+//  processStepResult Process step result record found (alloc and free by caller)
 //
 // Get process step result record identified by the processResultId and processStepId
 
@@ -1487,11 +1500,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessStepResult )( dbHandle handle,
 
 // GetProcessStepResults
 // IN
-//	handle
-//  processResultId	Id of process result record
+//  handle
+//  processResultId     Id of process result record
 // OUT
-//	processStepResults	Array of ProcessStepResultPtr (alloc by callee, use FreeStructArray() to free)
-//	countPtr	Size of above array
+//  processStepResults  Array of ProcessStepResultPtr (alloc by callee, use FreeStructArray() to free)
+//  countPtr            Size of above array
 //
 // Returns all process step result for a given process result id
 // as array of structure pointers and the size of the array
@@ -1500,40 +1513,40 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessStepResult )( dbHandle handle,
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetProcessStepResults )( dbHandle handle,
                                                                cdbID    processResultId,
-									                            __NAMESPACE__( ProcessStepResultPtr ) **processStepResults,
+                                              __NAMESPACE__( ProcessStepResultPtr ) **processStepResults,
                                                                int*     countPtr );
 
 // GetPreviousProcessStepStatus
 // IN
-//	handle
-//  processResultId	Id of process result record
-//  processStepId	Id of process step record
-//  strictlyMode	Check strict chronolical order
+//  handle
+//  processResultId   Id of process result record
+//  processStepId     Id of process step record
+//  strictlyMode      Check strict chronolical order
 // OUT
-//	processStepResult	ProcessStepResult record of the previous process step
-//	statusPtr			Status of the matched record
-//						-4   Found a result but there exists steps below with newer end time (reported only in strict mode)
-//						-3   Found a result but is not the previous step (reported only in strict mode)
-//						-2	 No according result found
-//						-1	 No data found
-//						>= 0 Status of the matched previous record
+//  processStepResult ProcessStepResult record of the previous process step
+//  statusPtr         Status of the matched record
+//                    -4   Found a result but there exists steps below with newer end time (reported only in strict mode)
+//                    -3   Found a result but is not the previous step (reported only in strict mode)
+//                    -2   No according result found
+//                    -1   No data found
+//                    >= 0 Status of the matched previous record
 //
-// Returns the previous process step result and stati. 
+// Returns the previous process step result and stati.
 //
 // Returns the standard error codes
 
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetPreviousProcessStepStatus )( dbHandle handle,
-																	  cdbID		processResultId,
-																	  idbID		processStepId,
-																	  int		strictlyMode,
-																	  __NAMESPACE__( ProcessStepResultPtr ) processStepResult,
-																	  int*		statusPtr );
+                                    cdbID		processResultId,
+                                    idbID		processStepId,
+                                    int		strictlyMode,
+                                    __NAMESPACE__( ProcessStepResultPtr ) processStepResult,
+                                    int*		statusPtr );
 
 // SetProcessStepResult
 // IN
-//	handle
-//  isRepeat					This step has been repeated
-//  processStepResult			Product record to update (alloc and free by caller)
+//  handle
+//  isRepeat            This step has been repeated
+//  processStepResult   Product record to update (alloc and free by caller)
 //
 // Update the process step result record with new values. Apply checks accoring statusId setting.
 // This call is the third in result chain after SetTestValueResult and SetTestStepResult.
@@ -1545,8 +1558,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetProcessStepResult )( dbHandle handle,
 
 // NewTestStepResult
 // IN
-//	handle
-//  testStepResult		Test step result record filled with base data (alloc and free by caller)
+//  handle
+//  testStepResult  Test step result record filled with base data (alloc and free by caller)
 //
 // Create a new test step result record in db. Fields will be updated on return
 
@@ -1555,9 +1568,9 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewTestStepResult )( dbHandle handle,
 
 // GetTestStepResult
 // IN
-//	handle
-//  processStepResultId		Process step result id to search
-//  testStepId				Test step id to search
+//  handle
+//  processStepResultId Process step result id to search
+//  testStepId          Test step id to search
 // OUT
 //  testStepResult			Test step result record found (alloc and free by caller)
 //
@@ -1571,9 +1584,9 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestStepResult )( dbHandle handle,
 
 // SetTestStepResult
 // IN
-//	handle
-//  isRepeat				This step has been repeated
-//  testStepResult			Test step result record to update (alloc and free by caller)
+//  handle
+//  isRepeat        This step has been repeated
+//  testStepResult  Test step result record to update (alloc and free by caller)
 //
 // Update the test step result record with new values. Apply checks according statusId setting.
 // This call is the second in result chain after SetTestValueResult.
@@ -1585,8 +1598,8 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetTestStepResult )( dbHandle handle,
 
 // NewTestValueResult
 // IN
-//	handle
-//  testValueResult		Test value result record filled with base data (alloc and free by caller)
+//  handle
+//  testValueResult Test value result record filled with base data (alloc and free by caller)
 //
 // Create a new test value result record in db. Fields will be updated on return
 
@@ -1595,11 +1608,11 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( NewTestValueResult )( dbHandle handle,
 
 // GetTestValueResult
 // IN
-//	handle
-//  testStepResultId		Test step result id to search
-//  testValueId				Test value id to search
+//  handle
+//  testStepResultId  Test step result id to search
+//  testValueId       Test value id to search
 // OUT
-//  testValueResult			Test value result record found (alloc and free by caller)
+//  testValueResult   Test value result record found (alloc and free by caller)
 //
 // Get test value result record identified by the testStepResultId and testValueId
 
@@ -1611,9 +1624,9 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( GetTestValueResult )( dbHandle handle,
 
 // SetTestValueResult
 // IN
-//	handle
-//  isRepeat				The test has been repeated
-//  testValueResult			Test value result record to update (alloc and free by caller)
+//  handle
+//  isRepeat        The test has been repeated
+//  testValueResult Test value result record to update (alloc and free by caller)
 //
 // Update the test value result record with new values. Apply checks according statusId setting.
 // This call is the first in result chain.
@@ -1622,25 +1635,28 @@ __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( SetTestValueResult )( dbHandle handle,
                                                             int      isRepeat,
                                                             __NAMESPACE__( TestValueResultPtr ) testValueResult );
 
-
 // WPL EAPU dedicated functions
 __FUNCTYPE_1__ RetVal __FUNCTYPE_2__( eapu_check_ecusn )( dbHandle handle,
-															 char*		wabcoNumber,
-															 int		testSequence_hi,
-															 int		testSequence_lo,
-															 int		testValueSequence_hi,
-															 int		testValueSequence_lo,
-															 int		check_period,
-															 char*		ecusn,
-                                                             char*		serialNumber);
+                                                          char* wabcoNumber,
+                                                          int   testSequence_hi,
+                                                          int   testSequence_lo,
+                                                          int   testValueSequence_hi,
+                                                          int   testValueSequence_lo,
+                                                          int   check_period,
+                                                          char* ecusn,
+                                                          char* serialNumber);
 
 #endif
 
 #undef  __FUNCTYPE_1__
 #undef  __FUNCTYPE_2__
 #undef  __NAMESPACE__
+
 #if defined(__PRODADLL_EXPORT__)
 #undef __PRODADLL_EXPORT__
+#endif
+
+#pragma pack(pop) // set struct member alignment to default value set in Properties -> Configuration Prperties -> C/C++ -> Code Generation -> Struct Member Alignment
 
 #endif
 
