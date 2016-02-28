@@ -10,7 +10,7 @@ PRODALIBPATH = prodllng\Release_11g
 TARGET =	psark.exe
 
 $(TARGET):	$(OBJS)
-	$(CXX) -o $(TARGET) $(OBJS) $(LIBS) -l $(PRODALIB) -L $(PRODALIBPATH) 
+	$(CXX) -o $(TARGET) $(OBJS) $(LIBS) -l $(PRODALIB) -L $(PRODALIBPATH) -static-libgcc -static-libstdc++ 
 
 all:	$(TARGET)
 

@@ -489,3 +489,27 @@ Thursday 25.02.2016, 02:35:56	NewTestStepResult: Oracle error: -2091	ORA-02091: 
 ORA-02291: integrity constraint (PR
 Thursday 25.02.2016, 02:35:56	NewTestStepResult: Oracle error: -2091	ORA-02091: transaction rolled back
 ORA-02291: integrity constraint (PR
+Friday 26.02.2016, 21:45:41	GetProcess: Not found: 1403	ORA-01403: no data found
+
+select to_char(CONTENT_ID) ,MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,to_char(PREVIEW_ID) ,PRODUCTION_LINE_ID ,RELEASE_ID ,DESCRIPTION_LABEL into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15  from PRODANG.PROCESS where (ID=:b16 and RELEASE_ID=1)
+Friday 26.02.2016, 21:45:41	GetProductionLine: Not found: 1403	ORA-01403: no data found
+
+select DESCRIPTION_LABEL into :b0:b1  from PRODANG.PRODUCTION_LINE where ID=:b2
+Friday 26.02.2016, 21:45:41	GetProcessStep: Not found: 1403	ORA-01403: no data found
+
+select MD_REASON ,to_char(MD_TIME,'dd.mm.yyyy hh24:mi:ss') ,MD_USER ,RELEASE_ID ,DESCRIPTION_LABEL ,FILENAME ,TRANSFER ,PROCESS_ID ,SYSTEM_ID ,PROCESS_SEQUENCE ,LIMIT_YELLOW ,LIMIT_RED into :b0:b1,:b2:b3,:b4:b5,:b6:b7,:b8:b9,:b10:b11,:b12:b13,:b14:b15,:b16:b17,:b18:b19,:b20:b21,:b22:b23  from PRODANG.PROCESS_STEP where (ID=:b24 and RELEASE_ID=1)
+Friday 26.02.2016, 21:45:41	GetSystem: Not found: 1403	ORA-01403: no data found
+
+select NAME into :b0  from PRODANG.SYSTEMS where ID=:b1
+Friday 26.02.2016, 21:45:41	NewProduct: Oracle error: -2091	ORA-02091: transaction rolled back
+ORA-02291: integrity constraint (PR
+ﬂ„Åwñ‚Åw`Á‹
+L
+Friday 26.02.2016, 21:45:41	NewProcessResult: Oracle error: -1400	ORA-01400: cannot insert NULL into ("PRODANG"."PROCESS_RESULT"."PRODUC
+insert into PRODANG.PROCESS_RESULT (ID,L_ID,DB_ID,START_TIME,PROCESS_ID,STATUS_ID,PRODUCT_ID,ARCHIVE) values (to_number(:b0),to_number(:b0),:b2,to_date(:b3,'dd.mm.yyyy hh24:mi:ss'),:b4,:b5,to_number(:b6),'0')
+Friday 26.02.2016, 21:45:41	NewProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=sysdate where ID=(select PRODUCT_ID  from PRODANG.PROCESS_RESULT where ID=to_number(:b0))
+Friday 26.02.2016, 21:45:41	SetProcessStepResult: Not found: 1403	ORA-01403: no data found
+update PRODANG.PROCESS_STEP_RESULT  set STATUS_ID=:b0,OPERATOR_ID=:b1,START_TIME=to_date(:b2,'dd.mm.yyyy hh24:mi:ss'),END_TIME=to_date(:b3,'dd.mm.yyyy hh24:mi:ss') where ID=to_number(:b4)
+Friday 26.02.2016, 21:45:41	SetProduct: Not found: 1403	ORA-01403: no data found
+update PRODANG.PRODUCT  set MD_TIME=to_date(:b0,'dd.mm.yyyy hh24:mi:ss'),MD_PROCESS_STEP_ID=decode(:b1,0,null ,:b1),WABCO_PART_ID=:b3,SERIAL_NUMBER=:b4,INDIVIDUAL=:b5,XCOMMENT=:b6 where ID=to_number(:b7)

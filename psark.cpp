@@ -32,6 +32,7 @@ class Proda                   // begin declaration of the class
 
     int GetAge() const;            // accessor function
     void SetAge(int age);    // accessor function
+    void SetDBConnectionParams(std::string db_user, std::string db_pass, std::string db_name);
     int init();
     int login();
     int set_language();
@@ -184,7 +185,6 @@ class Proda                   // begin declaration of the class
 		delete[] db_user;
 		delete[] db_pass;
 		delete[] db_name;
-		delete[] db_user;
 
 		ExitProDll();
 
@@ -221,6 +221,14 @@ class Proda                   // begin declaration of the class
 	   // set member variable its age to
 	   // value passed in by parameter age
 	   itsAge = age;
+	}
+
+	void Proda::SetDBConnectionParams(std::string user, std::string pass, std::string name)
+	{
+		strcpy(db_user, user.c_str());
+		strcpy(db_pass, pass.c_str());
+		strcpy(db_name, name.c_str());
+		std::cout << "New DB connection parameters set: " << db_user << "/" << db_pass << "@" << db_name << std::endl;
 	}
 
 	int Proda::init()
@@ -1044,11 +1052,14 @@ int main(int argc, char *argv[]){
 	int bflag = 0;
 	char *cvalue = NULL;
 	char *fvalue = NULL;
+	char *db_user = NULL;
+	char *db_pass = NULL;
+	char *db_name = NULL;
 	int index;
 	int c;
 
 	opterr = 0;
-	while ((c = getopt (argc, argv, "abc:f:")) != -1)
+	while ((c = getopt (argc, argv, "abc:f:u:p:d:")) != -1)
 	switch (c)
 	{
 		case 'a':
@@ -1063,8 +1074,18 @@ int main(int argc, char *argv[]){
 		case 'f':
 			fvalue = optarg;
 			break;
+		case 'u':
+			db_user = optarg;
+			break;
+		case 'p':
+			db_pass = optarg;
+			break;
+		case 'd':
+			db_name = optarg;
+			break;
+
 		case '?':
-			if ((optopt == 'c') or (optopt == 'f'))
+			if ((optopt == 'c') or (optopt == 'f') or (optopt == 'u') or (optopt == 'p') or (optopt == 'd'))
 				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
 			else if (isprint (optopt))
 				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -1129,7 +1150,7 @@ int main(int argc, char *argv[]){
 
 	int i = 0;
 	for (index = optind; index < argc; index++) {
-		printf ("Non-option argument %s\n", argv[index]);
+		//printf ("Non-option argument %s\n", argv[index]);
 		args[++i] =  (std::string) argv[index];
 	}
 	//command = argv[1];
@@ -1138,7 +1159,6 @@ int main(int argc, char *argv[]){
 	std::cout << "command: " << command << "\n";
 	std::cout << "wabco_number: " << wabco_number << "\n";
 	std::cout << "serial: " << serial << "\n";
-	std::cout << "args: " << args << "\n";
 
 	//return 1;
 
@@ -1173,15 +1193,19 @@ int main(int argc, char *argv[]){
 	}
 
 ***/
+	// PSARK initialization
+	Proda Psark(0);
+	Psark.init();
+
+	// set db connection parametes if defined on commandline
+	if (db_user and db_pass and db_name) {
+		Psark.SetDBConnectionParams(db_user, db_pass, db_name);
+	}
+
 
 	if (command == "generate_test_value_data") {
-		std::cout << "Adding new product.\n" << "Wabco Number: " << args[1] << ", Serial: " << args[2] <<"\n";
-
-		// init data
-		Proda Psark(0);
-		Psark.init();
+		std::cout << "generating test data.\n" << "Wabco Number: " << args[1] << ", Serial: " << args[2] <<"\n";
 		Psark.login();
-
 		Psark.identify_me(args[1]);
 		Psark.get_process();
 		Psark.get_production_line();
@@ -1203,9 +1227,6 @@ int main(int argc, char *argv[]){
 		Psark.set_product();
 	} else if (command == "new_tv") {
 		std::cout << "Adding new product.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
-
-		Proda Psark(0);
-		Psark.init();
 		Psark.login();
 		Psark.identify_me(wabco_number);
 		Psark.get_process();
@@ -1237,9 +1258,6 @@ int main(int argc, char *argv[]){
 		Psark.set_product();
 	} else if (command == "csv_feed") {
 		std::cout << "Running: csv_feed.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
-
-		Proda Psark(0);
-		Psark.init();
 		Psark.login();
 		Psark.identify_me(wabco_number);
 		Psark.get_process();
