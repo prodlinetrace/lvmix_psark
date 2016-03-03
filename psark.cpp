@@ -1049,7 +1049,7 @@ inline bool file_exists_test (const std::string& name) {
 int main(int argc, char *argv[]){
 	puts("PSARK - Proda Swiss Army Knife.");
 	int aflag = 0;
-	int bflag = 0;
+	int helpflag = 0;
 	char *cvalue = NULL;
 	char *fvalue = NULL;
 	char *db_user = NULL;
@@ -1058,15 +1058,43 @@ int main(int argc, char *argv[]){
 	int index;
 	int c;
 
+	const char * help_string = "Tool to make some bulk operations on PRODA database by Wabco.\n\n"
+		"SYNTAX: psark.exe  <wabco_number> <serial> [-c command] [-h] [-f file] [-u db_user] [-p db_password] [-d db_name]\n\n"
+
+		"Available options:\n"
+		"\t-c command to be used\nPlease use of following commands: \n"
+		"\t\tcsv_feed - feeds the test_steps and test_values with data specified in CSV file. Entries for selected serial and wabco_number combination will be added. To be used in conjuction with -f option.\n"
+		"\t\tgenerate_test_value_data - generates test value data for given wabco_number and serial combination. WARINING do not use on production database as it may cause unwanted pollution.\n"
+		"\t\tnew_tv - adds single test value for selected wabco_number and serial. "
+		"\t\t<wabco_number> - mandatory - 10 digit string specifying wabco_number. AKA product_type. \n"
+		"\t\t<serial> - mandatory - 6 digit string specifying serial number of product.\n"
+		"\t-f - use CSV file with data to load\n"
+		"\t-u - username which should be used for database connection. Use together with -p and -d options.\n"
+		"\t-p - password which should be used for database connection. Use together with -u and -d options.\n"
+		"\t-d - databasename which should be used for database connection. Appropriate database must be configured in c:\oracle\tnsnames.ora file. Use together with -u and -p options.\n"
+		"\t-h - prints this help message\n"
+
+		"\n\n\nEXAMPLES:\n"
+		"Add new test value for test step_id: 48 test_status: 1 test_value1: 31 test_value2: 40 \n"
+		"psark.exe -c new_tv 4640062010 123456 48 1 31 40\n\n"
+		"Generate test data for given wabco_number and serial:\n"
+		"psark.exe -c generate_test_value_data 4640062010 123456\n\n"
+		"Insert data results from CSV file.\nCSV file format (each line): step_id, test_status, test_value1, test_value2, test_value3\n"
+		"psark.exe -c csv_feed 4640062010 123456 -f file.csv\n\n"
+		"Insert data results from CSV file using custom DB credentials\n"
+		"psark.exe -c csv_feed 4640062010 123456 -f file.csv -u prodang -p wabco -d vb\n\n"
+
+	;
+
 	opterr = 0;
-	while ((c = getopt (argc, argv, "abc:f:u:p:d:")) != -1)
+	while ((c = getopt (argc, argv, "ahc:f:u:p:d:")) != -1)
 	switch (c)
 	{
 		case 'a':
 			aflag = 1;
 			break;
-		case 'b':
-			bflag = 1;
+		case 'h':
+			helpflag = 1;
 			break;
 		case 'c':
 			cvalue = optarg;
@@ -1095,6 +1123,11 @@ int main(int argc, char *argv[]){
 		default:
 			abort ();
 	}
+	if (helpflag) {
+		std::cout << help_string;
+		return 1;
+	}
+
 	if (not cvalue) {
 		std::cout << "Command parameter is mandatory. Sorry. Exit.\n";
 		return 1;
@@ -1160,39 +1193,6 @@ int main(int argc, char *argv[]){
 	std::cout << "wabco_number: " << wabco_number << "\n";
 	std::cout << "serial: " << serial << "\n";
 
-	//return 1;
-
-/***
-	argc-=(argc>0); argv+=(argc>0); // skip program name argv[0] if present
-	option::Stats  stats(usage, argc, argv);
-	option::Option options[stats.options_max], buffer[stats.buffer_max];
-	option::Parser parse(usage, argc, argv, options, buffer);
-
-	if (parse.error())
-		return 1;
-
-	if (options[HELP] || argc == 0) {
-		option::printUsage(std::cout, usage);
-		return 0;
-	}
-	int arg_count = parse.nonOptionsCount();
-	//std::string * args = new std::string[arg_count];
-	std::string  args[arg_count];
-	std::string command;
-
-
-	for (int i = 0; i < arg_count; ++i) {
-		std::cout << "Non-option #" << i << " type: " << typeid(parse.nonOption(i)).name() << " Value: " << parse.nonOption(i) << "\n";
-		args[i] = (std::string) parse.nonOption(i);
-	}
-	command = args[0];
-
-	std::cout << "Command: " << command << std::endl;
-	for (int i = 1; i < arg_count; i++) {
-		std::cout << "Argument #" << i << ": " << args[i] <<"\n";
-	}
-
-***/
 	// PSARK initialization
 	Proda Psark(0);
 	Psark.init();
