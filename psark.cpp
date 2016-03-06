@@ -27,14 +27,14 @@ using namespace std;
 class Proda                   // begin declaration of the class
 {
   public:                    // begin public section
-    Proda(int initialAge);     // constructor
+    Proda();     // constructor
     ~Proda();                  // destructor
 
-    int GetAge() const;            // accessor function
-    void SetAge(int age);    // accessor function
     void SetDBConnectionParams(std::string db_user, std::string db_pass, std::string db_name);
     int init();
     int login();
+    int logout();
+    int exit_prodll();
     int set_language();
 
     int identify_me(std::string wabco_number);
@@ -48,6 +48,7 @@ class Proda                   // begin declaration of the class
     int get_test_steps_orderby(int test_step_tbl_orderby);
     int get_test_step_params();
     int get_test_values();
+    int print_test_steps(int with_test_values);
 
     int new_product(std::string serial_numer);
     int new_process_result();
@@ -55,6 +56,8 @@ class Proda                   // begin declaration of the class
     int generate_test_results();
     //int add_test_result();
     int add_test_step_result(int test_step_id, int result);
+    int csv_feed(std::string csv_file);
+    bool file_exists_test(const std::string& name);
     //int add_test_step_value();
     //int add_test_step_value(int test_step_id);
     int add_test_step_value(int test_step_id, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0);
@@ -65,8 +68,7 @@ class Proda                   // begin declaration of the class
 
 
  private:                   // begin private section
-    int itsAge;              // member variable
-    char * string;
+    //char * string;
     RetVal	r;
 	dbHandle h1; // database handle
 	char db_user[100]; // database user
@@ -154,11 +156,8 @@ class Proda                   // begin declaration of the class
 };
 
 	 // constructor of Proda,
-	Proda::Proda(int initialAge=0)
+	Proda::Proda()
 	{
-		itsAge = 0;
-		string = new char[10]();
-
 	// values which should be in configuration file
 		strcpy(db_user, "prodang"); // database user - should be in configuration file
 		strcpy(db_pass, "wabco"); // database password - should be in configuration file
@@ -181,7 +180,6 @@ class Proda                   // begin declaration of the class
 
 	Proda::~Proda()                 // destructor, just an example
 	{
-		delete[] string;
 		delete[] db_user;
 		delete[] db_pass;
 		delete[] db_name;
@@ -206,29 +204,16 @@ class Proda                   // begin declaration of the class
 
 	}
 
-	// GetAge, Public accessor function
-	// returns value of itsAge member
-	int Proda::GetAge() const
-	{
-	   return itsAge;
-	}
-
-	// Definition of SetAge, public
-	// accessor function
-
-	void Proda::SetAge(int age)
-	{
-	   // set member variable its age to
-	   // value passed in by parameter age
-	   itsAge = age;
-	}
-
 	void Proda::SetDBConnectionParams(std::string user, std::string pass, std::string name)
 	{
 		strcpy(db_user, user.c_str());
 		strcpy(db_pass, pass.c_str());
 		strcpy(db_name, name.c_str());
 		std::cout << "New DB connection parameters set: " << db_user << "/" << db_pass << "@" << db_name << std::endl;
+	}
+
+	inline bool Proda::file_exists_test (const std::string& name) {
+		return ( access( name.c_str(), F_OK ) != -1 );
 	}
 
 	int Proda::init()
@@ -277,6 +262,39 @@ class Proda                   // begin declaration of the class
 				}
 				return 0;
 		}
+		return 0;
+	}
+
+	int Proda::logout()
+	{
+	// login to the database
+		r = Logout(h1); // logout from database
+		printf("Logout: ");
+		switch (r){
+			case 0:
+				printf("ok\n");
+				break;
+			default:
+				printf("error: %d\n",r); // error
+				return 0;
+		}
+		return 0;
+	}
+	int Proda::exit_prodll()
+	{
+		ExitProDll();
+		std::cout << "prodll lib disconnected.\n";
+		/*
+		FreeStructArray((void **)process_step_param_tbl);
+		FreeStructArray((void **)test_step_tbl);
+		FreeStructArray((void **)unit_data_tbl);
+		for (i=0;i<test_step_cnt;i++){
+			test_value_tbl = test_value_tbl_tbl[i];
+			test_step_param_tbl = test_step_param_tbl_tbl[i];
+			FreeStructArray((void **)test_value_tbl);
+			FreeStructArray((void **)test_step_param_tbl);
+		}
+		*/
 		return 0;
 	}
 
@@ -756,6 +774,63 @@ class Proda                   // begin declaration of the class
 		return 0;
 	}
 
+	int Proda::csv_feed(std::string csv_file) {
+		int ts_id, status_id;
+		double r1, r2, r3;
+		if (csv_file.c_str()) {
+			if (file_exists_test(csv_file.c_str())) {
+				cout << "Using CSV file: "<< csv_file <<" OK - (file exists)\n";
+			} else {
+				cerr << "CSV file: " << csv_file << "\n";
+				perror("ERROR: specified CSV file does not exists! ");
+				return 5;
+			}
+		}
+
+		int item = 0;
+		std::string csv_tokens[5] = {"", "", "", "", ""};
+		string line;
+		ifstream data(csv_file.c_str());
+		if (!data.is_open())
+			perror("error while opening file");
+
+		while(std::getline(data, line, '\n')) {
+			std::string token;
+			std::stringstream  lineStream(line);
+
+			//cout << "Preparing test data to feed: ";
+			for (int i=0; std::getline(lineStream, token, ' '); ){
+				csv_tokens[i++] = token;
+				//cout << token << " ";
+			}
+			//cout << "\n";
+			// convert data to the one accepted by add_test_data
+			//ts_id = atoi(csv_tokens[0].c_str());
+			// reset_data
+			r1=r2=r3=0;
+			ts_id = test_step_tbl[item++]->id;  // get the next ts_id defined by database
+			status_id = atoi(csv_tokens[0].c_str());
+			r1 = atof(csv_tokens[1].c_str());
+			r2 = atof(csv_tokens[2].c_str());
+			r3 = atof(csv_tokens[3].c_str());
+			// feed test data
+			std::cout << "Following data will be used to feed: TS_ID: " << ts_id << " STATUS_ID: "<< status_id << " R1: " << r1 << " R2: " << r2 << " R3: " << r3 << std::endl;
+			//(int) (int) (double) (double) (double)
+			add_test_data(ts_id, status_id, r1, r2, r3);
+			//for (int i=0; i< test_step_cnt; i++){ // iterate over test_steps from proda -> save all test steps
+			//	/* Required: processStepResultId, testStepId, statusId */
+			//	std::cout << test_step_tbl[i]->id << "\n";   // set testStepId for test step definition
+			//}
+			//csv_line_number++;
+			//Psark->add_test_step_result(43, 1);
+		}
+		if (data.bad())
+			perror("error while reading file");
+		cout << "CSV feed finished. " << item << " values were uploaded!\n\n";
+	}
+
+
+
 	int Proda::add_test_data(int test_step_id, int test_step_result_status, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0) {
 		/*
 			Test step result - adding
@@ -772,22 +847,22 @@ class Proda                   // begin declaration of the class
 		test_step_result.statusId=test_step_result_status; // -1 -> dll decide about status
 		r = NewTestStepResult(h1,&test_step_result); // begin test step result creation
 		//printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
-		std::cout << "NewTestStepResult for testStepId: " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
-						 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
+				//std::cout << "ok";
+				//std::cout << " tsr.id: " << test_step_result.id <<  " tsr.statusId " << test_step_result.statusId << "\n";
 				break;
 			default:
+				std::cout << "New TRS for TS_ID: " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 				printf("error: %d\n\n",r); // error
+				std::cout << " tsr.id: " << test_step_result.id <<  " tsr.statusId " << test_step_result.statusId << "\n";
 				return 0;
 		}
 		for (i=0;i<test_step_cnt;i++){ // save all test steps
 			// test values for test step
 			if (test_step_tbl[i]->id == test_step_id) {
 				test_step_found = 1;
-				std::cout << "Found TestStep with id: " << test_step_tbl[i]->id << ", desc: " << test_step_tbl[i]->description <<"\n";
+				//std::cout << "Found TestStep with id: " << test_step_tbl[i]->id << ", desc: " << test_step_tbl[i]->description <<"\n";
 				test_value_tbl = test_value_tbl_tbl[i];
 				test_value_cnt = test_value_cnt_tbl[i];
 				for (j=0;j<test_value_cnt;j++){
@@ -807,7 +882,7 @@ class Proda                   // begin declaration of the class
 					test_value_result.testValueId=test_value_tbl[j]->id;
 					strcpy(test_value_result.testStepResultId, test_step_result.id);
 					r = NewTestValueResult(h1,&test_value_result); // begin test value result creation
-					std::cout << "NewTestValueResult for testValueId: "<< test_value_tbl[j]->id <<" Test value sequence: " << test_value_tbl[j]->testValueSequence << " Description: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result<< '\n';
+					std::cout << "New TVR for TS_ID: " << test_step_id << " TV_ID: "<< test_value_tbl[j]->id <<" TV_SEQ: " << test_value_tbl[j]->testValueSequence << " TV_DESC: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result << " Status: ";
 
 					switch (r){
 						case 0:
@@ -827,15 +902,15 @@ class Proda                   // begin declaration of the class
 						Advise: provide structure returned by NewValueResult; if statusId in NewTestValueResult was already set to correct value (by set -1 or required value) then avoid set it again to -1 to avoid performance drop.
 					*/
 					r = SetTestValueResult(h1,0,&test_value_result); // finish test value result creation, isRepeat=0 as we do not repeat measurements
-					printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
 					switch (r){
 						case 0:
-							printf("ok\n");
+							//printf("ok\n");
 							//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
 							//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
 							break;
 						default:
-							printf("error: %d\n\n",r); // error
+					std::cout << "Set TVR for TV_ID: " << test_value_tbl[j]->id <<" TV_SEQ: "<< test_value_tbl[j]->testValueSequence <<" TV_DESC: " << test_value_tbl[j]->description << " Status: ";
+							printf("error: %d\n",r); // error
 							return 0;
 					}
 				}
@@ -850,20 +925,16 @@ class Proda                   // begin declaration of the class
 			Required: id, processStepResultId, testStepId, statusId
 			Advise: provide structure returned by NewTestStepResult and update statusId (-1/-3 to do automatic status calculation or required status).
 		*/
-		/*
-		*/
 		test_step_result.statusId=test_step_result_status;
 		r = SetTestStepResult(h1,0,&test_step_result); // finish test step result creation, isRepeat=0 as we do not repeat steps
 		//printf("SetTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
-		std::cout << "NewTestStepResult for testStepId= " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
-						 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
+				//cout << "ok" << " TSR_ID: " << test_step_result.id << " TSR_STATUS_ID: " << test_step_result.statusId << "\n";
 				break;
 			default:
-				printf("error: %d\n\n",r); // error
+				std::cout << "Set TSR for testStepId= " << test_step_id << ". Status: "; //"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+				printf("error: %d\n",r); // error
 				return 0;
 		}
 		return 0;
@@ -1041,16 +1112,32 @@ class Proda                   // begin declaration of the class
 		}
 		return 0;
 	}
+	int Proda::print_test_steps(int with_test_values=0) {
+		for (i=0;i<test_step_cnt;i++){ // save all test steps
+			std::cout << i+1 << "/" << test_step_cnt <<" TS_ID: " << test_step_tbl[i]->id <<" TS_SEQ: " << test_step_tbl[i]->testSequence <<" TS_ORDER: " << test_step_tbl[i]->testOrder << " TS_DESC: " << test_step_tbl[i]->description <<"\n";
+			// test values for test step
+			test_value_tbl = test_value_tbl_tbl[i];
+			test_value_cnt = test_value_cnt_tbl[i];
+			for (j=0;j<test_value_cnt;j++){
+				if ( with_test_values ) {
+					std::cout << "\tTV_SEQ: " << test_value_tbl[j]->testValueSequence << " TV_ID: " << test_value_tbl[j]->id << " TV_MAX: " << test_value_tbl[j]->maximum << " TV_MIN: " << test_value_tbl[j]->minimum << " TV_DESC: " << test_value_tbl[j]->description << "\n";
+				}
+			}
+		}
+		return 0;
+	}
 
 inline bool file_exists_test (const std::string& name) {
 	return ( access( name.c_str(), F_OK ) != -1 );
 }
 
+
 int main(int argc, char *argv[]){
 	puts("PSARK - Proda Swiss Army Knife.");
-	int aflag = 0;
 	int helpflag = 0;
 	char *cvalue = NULL;
+	char *wvalue = NULL;
+	char *svalue = NULL;
 	char *fvalue = NULL;
 	char *db_user = NULL;
 	char *db_pass = NULL;
@@ -1059,15 +1146,16 @@ int main(int argc, char *argv[]){
 	int c;
 
 	const char * help_string = "Tool to make some bulk operations on PRODA database by Wabco.\n\n"
-		"SYNTAX: psark.exe  <wabco_number> <serial> [-c command] [-h] [-f file] [-u db_user] [-p db_password] [-d db_name]\n\n"
+		"SYNTAX: psark.exe -w <wabco_number> -s [serial] [-c command] [-h] [-f file] [-u db_user] [-p db_password] [-d db_name]\n\n"
 
 		"Available options:\n"
 		"\t-c command to be used\nPlease use of following commands: \n"
 		"\t\tcsv_feed - feeds the test_steps and test_values with data specified in CSV file. Entries for selected serial and wabco_number combination will be added. To be used in conjuction with -f option.\n"
 		"\t\tgenerate_test_value_data - generates test value data for given wabco_number and serial combination. WARINING do not use on production database as it may cause unwanted pollution.\n"
 		"\t\tnew_tv - adds single test value for selected wabco_number and serial. "
-		"\t\t<wabco_number> - mandatory - 10 digit string specifying wabco_number. AKA product_type. \n"
-		"\t\t<serial> - mandatory - 6 digit string specifying serial number of product.\n"
+		"\t\tget_tv - connects to db with selected wabco_number and serial and displays sequence of test steps and test values. No data in database is changed."
+		"\t-w - <wabco_number> - mandatory - 10 digit string specifying wabco_number. AKA product_type. \n"
+		"\t-s - <serial> - mandatory - 6 digit string specifying serial number of product.\n"
 		"\t-f - use CSV file with data to load\n"
 		"\t-u - username which should be used for database connection. Use together with -p and -d options.\n"
 		"\t-p - password which should be used for database connection. Use together with -u and -d options.\n"
@@ -1076,28 +1164,35 @@ int main(int argc, char *argv[]){
 
 		"\n\n\nEXAMPLES:\n"
 		"Add new test value for test step_id: 48 test_status: 1 test_value1: 31 test_value2: 40 \n"
-		"psark.exe -c new_tv 4640062010 123456 48 1 31 40\n\n"
+		"psark.exe -c new_tv -w 4640062010 -s 123456 48 1 31 40\n\n"
 		"Generate test data for given wabco_number and serial:\n"
-		"psark.exe -c generate_test_value_data 4640062010 123456\n\n"
+		"psark.exe -c generate_test_value_data -w 4640062010 -s 123456\n\n"
 		"Insert data results from CSV file.\nCSV file format (each line): step_id, test_status, test_value1, test_value2, test_value3\n"
-		"psark.exe -c csv_feed 4640062010 123456 -f file.csv\n\n"
+		"psark.exe -c csv_feed -w 4640062010 -s 123456 -f file.csv\n\n"
 		"Insert data results from CSV file using custom DB credentials\n"
-		"psark.exe -c csv_feed 4640062010 123456 -f file.csv -u prodang -p wabco -d vb\n\n"
+		"psark.exe -c csv_feed -w 4640062010 -s 123456 -f file.csv -u prodang -p wabco -d vb\n\n"
+		"Get test_steps defined in db for given wabco_id\n"
+		"psark.exe -c get_test_steps -w 4640062010 -s 11 -u prodang -p wabco -d vb\n\n"
+		"Get test_steps and test_values defined in db for given wabco_id\n"
+		"psark.exe -c get_test_values -w 4640062010 -s 11 -u prodang -p wabco -d vb\n\n"
 
 	;
 
 	opterr = 0;
-	while ((c = getopt (argc, argv, "ahc:f:u:p:d:")) != -1)
+	while ((c = getopt (argc, argv, "hc:w:s:f:u:p:d:")) != -1)
 	switch (c)
 	{
-		case 'a':
-			aflag = 1;
-			break;
 		case 'h':
 			helpflag = 1;
 			break;
 		case 'c':
 			cvalue = optarg;
+			break;
+		case 'w':
+			wvalue = optarg;
+			break;
+		case 's':
+			svalue= optarg;
 			break;
 		case 'f':
 			fvalue = optarg;
@@ -1132,6 +1227,16 @@ int main(int argc, char *argv[]){
 		std::cout << "Command parameter is mandatory. Sorry. Exit.\n";
 		return 1;
 	}
+	if (not wvalue) {
+		std::cout << "wabco_numer parameter is mandatory. Sorry. Exit.\n";
+		return 1;
+	}
+
+	if (not svalue) {
+		std::cout << "serial parameter is mandatory. Sorry. Exit.\n";
+		return 1;
+	}
+
 	if (fvalue and 0 ) {
 		if (file_exists_test(fvalue)) {
 			cout << "Trying to use csv file: "<< fvalue <<" OK - (file exists)\n";
@@ -1178,69 +1283,67 @@ int main(int argc, char *argv[]){
 	std::string command, wabco_number, serial;
 	//int
 	command = cvalue;
-	std::cout << "Command: "<< cvalue << "\n";
-
+	wabco_number = wvalue;
+	serial = svalue;
 
 	int i = 0;
 	for (index = optind; index < argc; index++) {
 		//printf ("Non-option argument %s\n", argv[index]);
 		args[++i] =  (std::string) argv[index];
 	}
-	//command = argv[1];
-	wabco_number = args[1];
-	serial = args[2];
 	std::cout << "command: " << command << "\n";
 	std::cout << "wabco_number: " << wabco_number << "\n";
 	std::cout << "serial: " << serial << "\n";
 
 	// PSARK initialization
-	Proda Psark(0);
-	Psark.init();
+	Proda *Psark = new Proda();
+	Psark->init();
 
 	// set db connection parametes if defined on commandline
 	if (db_user and db_pass and db_name) {
-		Psark.SetDBConnectionParams(db_user, db_pass, db_name);
+		Psark->SetDBConnectionParams(db_user, db_pass, db_name);
 	}
 
 
 	if (command == "generate_test_value_data") {
 		std::cout << "generating test data.\n" << "Wabco Number: " << args[1] << ", Serial: " << args[2] <<"\n";
-		Psark.login();
-		Psark.identify_me(args[1]);
-		Psark.get_process();
-		Psark.get_production_line();
-		Psark.get_process_step();
-		Psark.get_system();
-		Psark.get_process_step_parameters();
-		Psark.get_test_steps_orderby(1);
-		Psark.get_test_step_params();
-		Psark.get_test_values();
+		Psark->login();
+		Psark->identify_me(args[1]);
+		Psark->get_process();
+		Psark->get_production_line();
+		Psark->get_process_step();
+		Psark->get_system();
+		Psark->get_process_step_parameters();
+		Psark->get_test_steps_orderby(1);
+		Psark->get_test_step_params();
+		Psark->get_test_values();
 
-		Psark.new_product(args[2]);
-		Psark.new_process_result();
-		Psark.new_process_step_result();
+		Psark->new_product(args[2]);
+		Psark->new_process_result();
+		Psark->new_process_step_result();
 
-		Psark.generate_test_results();
+		Psark->generate_test_results();
 
-		Psark.set_process_step_result();
-		Psark.set_process_result();
-		Psark.set_product();
+		Psark->set_process_step_result();
+		Psark->set_process_result();
+		Psark->set_product();
+		Psark->logout();
 	} else if (command == "new_tv") {
 		std::cout << "Adding new product.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
-		Psark.login();
-		Psark.identify_me(wabco_number);
-		Psark.get_process();
-		Psark.get_production_line();
-		Psark.get_process_step();
-		Psark.get_system();
-		Psark.get_process_step_parameters();
-		Psark.get_test_steps_orderby(1);
-		Psark.get_test_step_params();
-		Psark.get_test_values();
+		Psark->login();
+		Psark->identify_me(wabco_number);
+		Psark->get_process();
+		Psark->get_production_line();
+		Psark->get_process_step();
+		Psark->get_system();
+		Psark->get_process_step_parameters();
+		Psark->get_test_steps_orderby(1);
+		Psark->get_test_step_params();
+		Psark->get_test_values();
 
-		Psark.new_product(serial);
-		Psark.new_process_result();
-		Psark.new_process_step_result();
+		Psark->new_product(serial);
+		Psark->new_process_result();
+		Psark->new_process_step_result();
 		int ts_id, status_id;
 		double r1, r2, r3;
 		ts_id = atoi(args[3].c_str());
@@ -1250,89 +1353,69 @@ int main(int argc, char *argv[]){
 		r3 = atof(args[7].c_str());
 
 		//(int) args[4], (double) args[5], (double) args[6], (double) args[7]
-		//Psark.add_test_step_result(43, 1);
-		Psark.add_test_data(ts_id, status_id, r1, r2, r3);
+		//Psark->add_test_step_result(43, 1);
+		Psark->add_test_data(ts_id, status_id, r1, r2, r3);
 
-		Psark.set_process_step_result();
-		Psark.set_process_result();
-		Psark.set_product();
+		Psark->set_process_step_result();
+		Psark->set_process_result();
+		Psark->set_product();
+		Psark->logout();
+	} else if (command == "get_test_steps") {
+		std::cout << "Running: get_tv.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
+		Psark->login();
+		Psark->identify_me(wabco_number);
+		Psark->get_process();
+		Psark->get_production_line();
+		Psark->get_process_step();
+		Psark->get_system();
+		Psark->get_process_step_parameters();
+		Psark->get_test_steps_orderby(1);
+		Psark->get_test_step_params();
+		Psark->get_test_values();
+		Psark->print_test_steps(0);
+		Psark->logout();
+	} else if (command == "get_test_values") {
+		std::cout << "Running: get_tv.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
+		Psark->login();
+		Psark->identify_me(wabco_number);
+		Psark->get_process();
+		Psark->get_production_line();
+		Psark->get_process_step();
+		Psark->get_system();
+		Psark->get_process_step_parameters();
+		Psark->get_test_steps_orderby(1);
+		Psark->get_test_step_params();
+		Psark->get_test_values();
+		Psark->print_test_steps(1);
+		Psark->logout();
 	} else if (command == "csv_feed") {
 		std::cout << "Running: csv_feed.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
-		Psark.login();
-		Psark.identify_me(wabco_number);
-		Psark.get_process();
-		Psark.get_production_line();
-		Psark.get_process_step();
-		Psark.get_system();
-		Psark.get_process_step_parameters();
-		Psark.get_test_steps_orderby(1);
-		Psark.get_test_step_params();
-		Psark.get_test_values();
+		Psark->login();
+		Psark->identify_me(wabco_number);
+		Psark->get_process();
+		Psark->get_production_line();
+		Psark->get_process_step();
+		Psark->get_system();
+		Psark->get_process_step_parameters();
+		Psark->get_test_steps_orderby(1);
+		Psark->get_test_step_params();
+		Psark->get_test_values();
 
-		Psark.new_product(serial);
-		Psark.new_process_result();
-		Psark.new_process_step_result();
-		int ts_id, status_id;
-		double r1, r2, r3;
-		ts_id = atoi(args[3].c_str());
-		status_id = atoi(args[4].c_str());
-		r1 = atof(args[5].c_str());
-		r2 = atof(args[6].c_str());
-		r3 = atof(args[7].c_str());
+		Psark->new_product(serial);
+		Psark->new_process_result();
+		Psark->new_process_step_result();
 
-		if (fvalue) {
-			if (file_exists_test(fvalue)) {
-				cout << "Trying to use csv file: "<< fvalue <<" OK - (file exists)\n";
-			}else {
-				cerr << "CSV file: " << fvalue << "\n";
-				perror("ERROR: specified CSV file does not exists! ");
-				return 5;
-			}
+		Psark->csv_feed(fvalue);
 
-			int csv_line_number = 0;
-			std::string csv_tokens[5] = {"", "", "", "", ""};
-			string line;
-			ifstream data(fvalue);
-			if (!data.is_open())
-			    perror("error while opening file");
-
-
-			while(std::getline(data, line, '\n')) {
-				std::string token;
-				std::stringstream  lineStream(line);
-
-				cout << "Preparing test data to feed: ";
-				for (int i=0; std::getline(lineStream, token, ' '); ){
-					csv_tokens[i++] = token;
-					cout << token << " ";
-				}
-				cout << "\n";
-				// convert data to the one accepted by add_test_data
-				ts_id = atoi(csv_tokens[0].c_str());
-				status_id = atoi(csv_tokens[1].c_str());
-				r1 = atof(csv_tokens[2].c_str());
-				r2 = atof(csv_tokens[3].c_str());
-				r3 = atof(csv_tokens[4].c_str());
-				cout << "following data will be used to feed: TS_ID: " << ts_id << " STATUS_ID: "<< status_id << " R1: " << r1 << " R2: " << r2 << " R3: " << r3 << std::endl;
-				// feed test data
-				//(int) (int) (double) (double) (double)
-				Psark.add_test_data(ts_id, status_id, r1, r2, r3);
-				csv_line_number++;
-				//Psark.add_test_step_result(43, 1);
-			}
-		    if (data.bad())
-		        perror("error while reading file");
-		    cout << "CSV feed finished. " << csv_line_number << " values were uploaded!\n\n";
-		}
-
-		Psark.set_process_step_result();
-		Psark.set_process_result();
-		Psark.set_product();
-		std::cout << "BSARK finished. \n";
+		Psark->set_process_step_result();
+		Psark->set_process_result();
+		Psark->set_product();
+		Psark->logout();
 	} else {
 		std::cout <<"command not recognized: " << command << "\n";
 	}
-	//delete args;
-
+	Psark->exit_prodll();
+	std::cout << "PSARK finished. \n";
+	//delete Psark;
 	return EXIT_SUCCESS;
 }
