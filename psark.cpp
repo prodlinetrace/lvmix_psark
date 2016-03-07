@@ -1,27 +1,14 @@
-//============================================================================
-// Name        : psark.cpp
-// Author      : Piotr Wilkosz
-// Version     : 666
-// Copyright   : Your copyright notice
-// Description : PSARK (Proda Swiss Army Knife) C, Ansi-style
-//============================================================================
-//#define	_CRT_SECURE_NO_DEPRECATE
-
 //#pragma pack(push,1)
 
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
-//#include <stdio.h>
-//#include <stdlib.h>
 #include <windows.h>
 #include <unistd.h>
 #include <typeinfo>
 #include "prodllng/ProdaNG_DLL.h"
 using namespace std;
-//#include "json.hpp"
-
 
 
 class Proda                   // begin declaration of the class
@@ -30,12 +17,14 @@ class Proda                   // begin declaration of the class
     Proda();     // constructor
     ~Proda();                  // destructor
 
-    void SetDBConnectionParams(std::string db_user, std::string db_pass, std::string db_name);
     int init();
     int login();
     int logout();
     int exit_prodll();
     int set_language();
+    int get_verbose() const;
+    void set_verbose(int v);
+    void set_db_connection_params(std::string db_user, std::string db_pass, std::string db_name);
 
     int identify_me(std::string wabco_number);
 
@@ -54,12 +43,9 @@ class Proda                   // begin declaration of the class
     int new_process_result();
     int new_process_step_result(int operator_id);
     int generate_test_results();
-    //int add_test_result();
     int add_test_step_result(int test_step_id, int result);
     int csv_feed(std::string csv_file);
     bool file_exists_test(const std::string& name);
-    //int add_test_step_value();
-    //int add_test_step_value(int test_step_id);
     int add_test_step_value(int test_step_id, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0);
 	int add_test_data(int test_step_id, int test_step_result_status, double r1=0, double r2=0, double r3=0, double r4=0, double r5=0);
     int set_product();
@@ -69,6 +55,7 @@ class Proda                   // begin declaration of the class
 
  private:                   // begin private section
     //char * string;
+	int verbose;
     RetVal	r;
 	dbHandle h1; // database handle
 	char db_user[100]; // database user
@@ -158,6 +145,7 @@ class Proda                   // begin declaration of the class
 	 // constructor of Proda,
 	Proda::Proda()
 	{
+		verbose = 0;
 	// values which should be in configuration file
 		strcpy(db_user, "prodang"); // database user - should be in configuration file
 		strcpy(db_pass, "wabco"); // database password - should be in configuration file
@@ -180,9 +168,9 @@ class Proda                   // begin declaration of the class
 
 	Proda::~Proda()                 // destructor, just an example
 	{
-		delete[] db_user;
-		delete[] db_pass;
-		delete[] db_name;
+		//delete[] db_user;
+		//delete[] db_pass;
+		//delete[] db_name;
 
 		ExitProDll();
 
@@ -201,10 +189,19 @@ class Proda                   // begin declaration of the class
 		}
 		/***
 		***/
-
 	}
 
-	void Proda::SetDBConnectionParams(std::string user, std::string pass, std::string name)
+	int Proda::get_verbose() const
+		{
+		   return verbose;
+		}
+
+	void Proda::set_verbose(int v)
+	{
+	   verbose = v;
+	}
+
+	void Proda::set_db_connection_params(std::string user, std::string pass, std::string name)
 	{
 		strcpy(db_user, user.c_str());
 		strcpy(db_pass, pass.c_str());
@@ -220,13 +217,14 @@ class Proda                   // begin declaration of the class
 	{
 	// initialize the library
 		r = InitProDll(1);
-		printf("InitProDll: ");
+		if (verbose) printf("InitProDll: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
+				if (verbose) printf("ok\n");
 				break;
 				return 0;
 			default:
+				printf("InitProDll: ");
 				printf("error: %d\n",r); // error
 				return 1;
 		}
@@ -237,10 +235,10 @@ class Proda                   // begin declaration of the class
 	{
 	// login to the database
 		r = Login(db_user, db_pass, db_name, &h1);
-		printf("Login: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
+				if (verbose) printf("DB Login: ");
+				if (verbose) printf("ok\n");
 				break;
 			case -1017:
 				printf("Oracle error: ORA-1017 invalid username/password; logon denied (suggestion: check db_user or db_pass)\n");
@@ -258,6 +256,7 @@ class Proda                   // begin declaration of the class
 				if (r < 0) {
 					printf("Oracle error: ORA%d\n",r);
 				} else {
+					printf("DB Login: ");
 					printf("error: %d\n",r); // error
 				}
 				return 0;
@@ -269,12 +268,13 @@ class Proda                   // begin declaration of the class
 	{
 	// login to the database
 		r = Logout(h1); // logout from database
-		printf("Logout: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
+				if (verbose) printf("DB Logout: ");
+				if (verbose) printf("ok\n");
 				break;
 			default:
+				printf("DB Logout: ");
 				printf("error: %d\n",r); // error
 				return 0;
 		}
@@ -283,18 +283,7 @@ class Proda                   // begin declaration of the class
 	int Proda::exit_prodll()
 	{
 		ExitProDll();
-		std::cout << "prodll lib disconnected.\n";
-		/*
-		FreeStructArray((void **)process_step_param_tbl);
-		FreeStructArray((void **)test_step_tbl);
-		FreeStructArray((void **)unit_data_tbl);
-		for (i=0;i<test_step_cnt;i++){
-			test_value_tbl = test_value_tbl_tbl[i];
-			test_step_param_tbl = test_step_param_tbl_tbl[i];
-			FreeStructArray((void **)test_value_tbl);
-			FreeStructArray((void **)test_step_param_tbl);
-		}
-		*/
+		if (verbose) std::cout << "prodll lib disconnected.\n";
 		return 0;
 	}
 
@@ -333,17 +322,20 @@ class Proda                   // begin declaration of the class
 	int Proda::get_process() {
 	// read process definition
 		r=GetProcess(h1,ident.processId,&process);
-		printf("GetProcess for processId=\"%d\": ",ident.processId);
+
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" process.id: %d\n process.productionLineId: %d\n process.releaseId: %d\n process.description: %s\n process.mdReason: %s\n process.mdTime: %s\n process.mdUser: %s\n\n",
+				if (verbose) printf("GetProcess for processId=\"%d\": ",ident.processId);
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" process.id: %d\n process.productionLineId: %d\n process.releaseId: %d\n process.description: %s\n process.mdReason: %s\n process.mdTime: %s\n process.mdUser: %s\n\n",
 						 process.id,      process.productionLineId,      process.releaseId,      process.description,      process.mdReason,      process.mdTime,      process.mdUser);
 				break;
 			case 1403:
+				printf("GetProcess for processId=\"%d\": ",ident.processId);
 				printf("error: Record not found\n\n");
 				return 0;
 			default:
+				printf("GetProcess for processId=\"%d\": ",ident.processId);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -353,17 +345,20 @@ class Proda                   // begin declaration of the class
 	int Proda::get_production_line() {
 	// read production line description, remark: process is executed on production line
 		r=GetProductionLine(h1,process.productionLineId,&production_line);
-		printf("GetProductionLine for productionLineId=\"%d\": ",process.productionLineId);
+
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" production_line.id: %d\n production_line.description: %s\n\n",
+				if (verbose) printf("GetProductionLine for productionLineId=\"%d\": ",process.productionLineId);
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" production_line.id: %d\n production_line.description: %s\n\n",
 						 production_line.id,      production_line.description);
 				break;
 			case 1403:
+				printf("GetProductionLine for productionLineId=\"%d\": ",process.productionLineId);
 				printf("error: Record not found\n\n");
 				return 0;
 			default:
+				printf("GetProductionLine for productionLineId=\"%d\": ",process.productionLineId);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -373,17 +368,19 @@ class Proda                   // begin declaration of the class
 	int Proda::get_process_step() {
 	// read process step definition
 		r=GetProcessStep(h1,ident.processStepId,&process_step);
-		printf("GetProcessStep for processStepId=\"%d\": ",ident.processStepId);
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" process_step.id: %d\n process_step.processId: %d\n process_step.releaseId: %d\n process_step.systemId: %d\n process_step.processSequence: %d\n process_step.description: %s\n process_step.filename: %s\n process_step.limitRed: %.2f\n process_step.limitYellow: %.2f\n process_step.mdReason: %s\n process_step.mdTime: %s\n process_step.mdUser %s\n\n",
+				if (verbose) printf("GetProcessStep for processStepId=\"%d\": ",ident.processStepId);
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" process_step.id: %d\n process_step.processId: %d\n process_step.releaseId: %d\n process_step.systemId: %d\n process_step.processSequence: %d\n process_step.description: %s\n process_step.filename: %s\n process_step.limitRed: %.2f\n process_step.limitYellow: %.2f\n process_step.mdReason: %s\n process_step.mdTime: %s\n process_step.mdUser %s\n\n",
 						 process_step.id,      process_step.processId,      process_step.releaseId,      process_step.systemId,      process_step.processSequence,      process_step.description,      process_step.filename,      process_step.limitRed,        process_step.limitYellow,        process_step.mdReason,      process_step.mdTime,      process_step.mdUser);
 				break;
 			case 1403:
+				printf("GetProcessStep for processStepId=\"%d\": ",ident.processStepId);
 				printf("error: Record not found\n\n");
 				return 0;
 			default:
+				printf("GetProcessStep for processStepId=\"%d\": ",ident.processStepId);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -393,17 +390,19 @@ class Proda                   // begin declaration of the class
 	int Proda::get_system() {
 	// read system (production station) name, should be the same like we already define as system_name; remark: process contains multiple process steps, each process step is executed on system
 		r=GetSystem(h1,process_step.systemId,&system);
-		printf("GetSystem for systemId=\"%d\": ",process_step.systemId);
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" system.id: %d\n system.name: %s\n\n",
+				if (verbose) printf("GetSystem for systemId=\"%d\": ",process_step.systemId);
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" system.id: %d\n system.name: %s\n\n",
 						 system.id,      system.name);
 				break;
 			case 1403:
+				printf("GetSystem for systemId=\"%d\": ",process_step.systemId);
 				printf("error: Record not found\n\n");
 				return 0;
 			default:
+				printf("GetSystem for systemId=\"%d\": ",process_step.systemId);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -413,10 +412,10 @@ class Proda                   // begin declaration of the class
 	int Proda::get_process_step_parameters() {
 	// read process step parameters
 		r=GetProcessStepParams(h1,ident.processStepId,&process_step_param_tbl,&process_step_param_cnt);
-		printf("GetProcessStepParams for processStepId=\"%d\": ",ident.processStepId);
 		switch (r){
 			case 0:
-				printf("ok (read %d process step parameters)\n",process_step_param_cnt);
+				if (verbose) printf("GetProcessStepParams for processStepId=\"%d\": ",ident.processStepId);
+				if (verbose) printf("ok (read %d process step parameters)\n",process_step_param_cnt);
 				for (i=0;i<process_step_param_cnt;i++){
 					process_step_param = *process_step_param_tbl[i];
 					strcpy(unit_name,"");
@@ -429,15 +428,16 @@ class Proda                   // begin declaration of the class
 							break;
 						}
 					}
-					printf(" parameter: %d\n",i+1);
-					printf("  process_step_param.id: %d\n  process_step_param.description: %s\n  process_step_param.paramSequence: %d\n  process_step_param.processStepId: %d\n  process_step_param.unitId: %d\n  process_step_param.value: %.2f\n  process_step_param.mdReason: %s\n  process_step_param.mdTime: %s\n  process_step_param.mdUser %s\n",
+					if (verbose) printf(" parameter: %d\n",i+1);
+					if (verbose) printf("  process_step_param.id: %d\n  process_step_param.description: %s\n  process_step_param.paramSequence: %d\n  process_step_param.processStepId: %d\n  process_step_param.unitId: %d\n  process_step_param.value: %.2f\n  process_step_param.mdReason: %s\n  process_step_param.mdTime: %s\n  process_step_param.mdUser %s\n",
 							  process_step_param.id,       process_step_param.description,       process_step_param.paramSequence,       process_step_param.processStepId,       process_step_param.unitId,       process_step_param.value,         process_step_param.mdReason,       process_step_param.mdTime,       process_step_param.mdUser);
-					printf("  unit_name: %s\n  unit_description: %s\n",
+					if (verbose) printf("  unit_name: %s\n  unit_description: %s\n",
 							  unit_name,       unit_description);
 				}
-				printf("\n");
+				if (verbose) printf("\n");
 				break;
 			default:
+				printf("GetProcessStepParams for processStepId=\"%d\": ",ident.processStepId);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -451,19 +451,20 @@ class Proda                   // begin declaration of the class
 	GETTESTSTEPS_ORDERBY_TEST_ORDER = 1
 	*/
 		r = GetTestSteps_orderby(h1,ident.processStepId,&test_step_tbl,&test_step_cnt,test_step_tbl_orderby);
-		printf("GetTestSteps_orderby for processStepId=\"%d\", orderby=\"%d\": ",ident.processStepId,test_step_tbl_orderby);
 		switch (r){
 			case 0:
-				printf("ok (read %d test steps)\n",test_step_cnt);
+				if (verbose) printf("GetTestSteps_orderby for processStepId=\"%d\", orderby=\"%d\": ",ident.processStepId,test_step_tbl_orderby);
+				if (verbose) printf("ok (read %d test steps)\n",test_step_cnt);
 				for (i=0;i<test_step_cnt;i++){
 					test_step = *test_step_tbl[i];
-					printf(" step: %d\n",i+1);
-					printf("  test_step.id: %d\n  test_step.description: %s\n  test_step.testSequence: %d\n  test_step.testOrder: %d\n  test_step.processStepId: %d\n  test_step.mdReason: %s\n  test_step.mdTime: %s\n  test_step.mdUser %s\n",
+					if (verbose) printf(" step: %d\n",i+1);
+					if (verbose) printf("  test_step.id: %d\n  test_step.description: %s\n  test_step.testSequence: %d\n  test_step.testOrder: %d\n  test_step.processStepId: %d\n  test_step.mdReason: %s\n  test_step.mdTime: %s\n  test_step.mdUser %s\n",
 							  test_step.id,       test_step.description,       test_step.testSequence,       test_step.testOrder,       test_step.processStepId,       test_step.mdReason,       test_step.mdTime,       test_step.mdUser);
 				}
-				printf("\n");
+				if (verbose) printf("\n");
 				break;
 			default:
+				printf("GetTestSteps_orderby for processStepId=\"%d\", orderby=\"%d\": ",ident.processStepId,test_step_tbl_orderby);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -476,12 +477,12 @@ class Proda                   // begin declaration of the class
 		test_step_param_tbl_tbl=new TestStepParamPtr*[test_step_cnt]; // initialize table to store pointers to tables with pointers to test step parameters
 		for (i=0;i<test_step_cnt;i++){
 			r = GetTestStepParams(h1,test_step_tbl[i]->id,&(test_step_param_tbl_tbl[i]),&(test_step_param_cnt_tbl[i]));
-			printf("GetTestStepParams for testStepId=\"%d\": ",test_step_tbl[i]->id);
 			switch (r){
 				case 0:
+					if (verbose) printf("GetTestStepParams for testStepId=\"%d\": ",test_step_tbl[i]->id);
 					test_step_param_tbl = test_step_param_tbl_tbl[i];
 					test_step_param_cnt = test_step_param_cnt_tbl[i];
-					printf("ok (read %d test step parameters)\n",test_step_param_cnt);
+					if (verbose) printf("ok (read %d test step parameters)\n",test_step_param_cnt);
 					for (j=0;j<test_step_param_cnt;j++){
 						test_step_param = *test_step_param_tbl[j];
 						strcpy(unit_name,"");
@@ -494,15 +495,16 @@ class Proda                   // begin declaration of the class
 								break;
 							}
 						}
-						printf(" parameter: %d\n",j+1);
-						printf("  test_step_param.id: %d\n  test_step_param.description: %s\n  test_step_param.paramSequence: %d\n  test_step_param.testStepId: %d\n  test_step_param.unitId: %d\n  test_step_param.value: %.2f\n  test_step_param.mdReason: %s\n  test_step_param.mdTime: %s\n  test_step_param.mdUser %s\n",
+						if (verbose) printf(" parameter: %d\n",j+1);
+						if (verbose) printf("  test_step_param.id: %d\n  test_step_param.description: %s\n  test_step_param.paramSequence: %d\n  test_step_param.testStepId: %d\n  test_step_param.unitId: %d\n  test_step_param.value: %.2f\n  test_step_param.mdReason: %s\n  test_step_param.mdTime: %s\n  test_step_param.mdUser %s\n",
 								  test_step_param.id,       test_step_param.description,       test_step_param.paramSequence,       test_step_param.testStepId,       test_step_param.unitId,       test_step_param.value,         test_step_param.mdReason,       test_step_param.mdTime,       test_step_param.mdUser);
-						printf("  unit_name: %s\n  unit_description: %s\n",
+						if (verbose) printf("  unit_name: %s\n  unit_description: %s\n",
 								  unit_name,       unit_description);
 					}
-					printf("\n");
+					if (verbose) printf("\n");
 					break;
 				default:
+					printf("GetTestStepParams for testStepId=\"%d\": ",test_step_tbl[i]->id);
 					printf("error: %d\n\n",r); // error
 					return 0;
 			}
@@ -516,12 +518,12 @@ class Proda                   // begin declaration of the class
 		test_value_tbl_tbl=new TestValuePtr*[test_step_cnt]; // initialize table to store pointers to tables with pointers to test values
 		for (i=0;i<test_step_cnt;i++){
 			r = GetTestValues(h1,test_step_tbl[i]->id,&(test_value_tbl_tbl[i]),&(test_value_cnt_tbl[i]));
-			printf("GetTestValues for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+			if (verbose) printf("GetTestValues for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 			switch (r){
 				case 0:
 				test_value_tbl = test_value_tbl_tbl[i];
 				test_value_cnt = test_value_cnt_tbl[i];
-					printf("ok (read %d test values)\n",test_value_cnt);
+				if (verbose) printf("ok (read %d test values)\n",test_value_cnt);
 					for (j=0;j<test_value_cnt;j++){
 						test_value = *test_value_tbl[j];
 						strcpy(unit_name,"");
@@ -534,15 +536,16 @@ class Proda                   // begin declaration of the class
 								break;
 							}
 						}
-						printf(" test value: %d\n",j+1);
-						printf("  test_value.id: %d\n  test_value.description: %s\n  test_value.testValueSequence: %d\n  test_value.testStepId: %d\n  test_value.unitId: %d\n  test_value.minimum: %.2f\n  test_value.maximum: %.2f\n  test_value.valueText: %s\n  test_value.mdReason: %s\n  test_value.mdTime: %s\n  test_value.mdUser %s\n",
+						if (verbose) printf(" test value: %d\n",j+1);
+						if (verbose) printf("  test_value.id: %d\n  test_value.description: %s\n  test_value.testValueSequence: %d\n  test_value.testStepId: %d\n  test_value.unitId: %d\n  test_value.minimum: %.2f\n  test_value.maximum: %.2f\n  test_value.valueText: %s\n  test_value.mdReason: %s\n  test_value.mdTime: %s\n  test_value.mdUser %s\n",
 								  test_value.id,       test_value.description,       test_value.testValueSequence,       test_value.testStepId,       test_value.unitId,       test_value.minimum,         test_value.maximum,         test_value.valueText,       test_value.mdReason,       test_value.mdTime,       test_value.mdUser);
-						printf("  unit_name: %s\n  unit_description: %s\n",
+						if (verbose) printf("  unit_name: %s\n  unit_description: %s\n",
 								  unit_name,       unit_description);
 					}
-					printf("\n");
+					if (verbose) printf("\n");
 					break;
 				default:
+					printf("GetTestValues for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 					printf("error: %d\n\n",r); // error
 					return 0;
 			}
@@ -554,17 +557,19 @@ class Proda                   // begin declaration of the class
 	{
 	// identify (find) process, process step etc data based on WABCO number and system name. Function return values into structure Identification ident;
 		r = IdentifyMe(h1, system_name, (char *) wabco_number.c_str(), 0, 0, &ident);
-		printf("IdentifyMe for wabco_number=\"%s\" and system_name=\"%s\": ",wabco_number.c_str(),system_name);
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" ident.processId: %d\n ident.processStepId: %d\n ident.systemId: %d\n ident.wabcoPartId: %d\n\n",
+				if (verbose) printf("IdentifyMe for wabco_number=\"%s\" and system_name=\"%s\": ",wabco_number.c_str(),system_name);
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" ident.processId: %d\n ident.processStepId: %d\n ident.systemId: %d\n ident.wabcoPartId: %d\n\n",
 						 ident.processId,      ident.processStepId,      ident.systemId,      ident.wabcoPartId);
 				break;
 			case ERROR_NO_DATA:
+				printf("IdentifyMe for wabco_number=\"%s\" and system_name=\"%s\": ",wabco_number.c_str(),system_name);
 				printf("error: ERROR_NO_DATA\n\n");
 				return 0;
 			default:
+				printf("IdentifyMe for wabco_number=\"%s\" and system_name=\"%s\": ",wabco_number.c_str(),system_name);
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
@@ -584,24 +589,26 @@ class Proda                   // begin declaration of the class
 		strcpy(product.serialNumber, serial_number.c_str()); // serial number for product
 		product.individual=1; // set whether product is with SN (individual=1) or without SN (individual=0)
 		product.crProcessStepId=ident.processStepId; // set creating process step
-		strcpy(product.comment,"added from sync program, v. 1.666"); // comment for product, ex. version of test program
+		strcpy(product.comment,"added from psark program, v. 1.666"); // comment for product, ex. version of test program
 
 		r = NewProduct_lsn(h1,&product); // create product
-		printf("NewProduct_lsn: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" New product added\n"); // new product is created
+				if (verbose) printf("NewProduct_lsn: ");
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" New product added\n"); // new product is created
 				break;
 			case ERROR_MORE_DATA:
+				printf("NewProduct_lsn: ");
 				printf("ok\n");
 				printf(" Product already exists\n"); // this product already exists and NewProduct_lsn function return existing product
 				break;
 			default:
+				printf("NewProduct_lsn: ");
 				printf("error: %d\n\n",r); // error
 				return 0;
 		}
-		printf("  product.id: %s\n  product.wabcoPartId: %d\n  product.serialNumber: %s\n  product.individual: %d\n  product.comment: %s\n  product.crProcessStepId: %d\n  product.mdProcessStepId: %d\n  product.crTime: %s\n  product.mdTime: %s\n\n",
+		if (verbose) printf("  product.id: %s\n  product.wabcoPartId: %d\n  product.serialNumber: %s\n  product.individual: %d\n  product.comment: %s\n  product.crProcessStepId: %d\n  product.mdProcessStepId: %d\n  product.crTime: %s\n  product.mdTime: %s\n\n",
 				  product.id,       product.wabcoPartId,       product.serialNumber,       product.individual,       product.comment,       product.crProcessStepId,       product.mdProcessStepId,       product.crTime,       product.mdTime);
 
 		return 0;
@@ -620,21 +627,22 @@ class Proda                   // begin declaration of the class
 		process_result.statusId=-1; // -1 -> dll decides about status
 
 		r = NewProcessResult(h1,&process_result);
-		printf("NewProcessResult: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" New process result added\n");
+				if (verbose) printf("NewProcessResult: ");
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" New process result added\n");
 				break;
 			case ERROR_MORE_DATA:
-				printf("ok\n");
-				printf(" Process result already exists\n");
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" Process result already exists\n");
 				break;
 			default:
+				printf("NewProcessResult: ");
 				printf("error: %d\n",r); // error
 				return 0;
 		}
-		printf("  process_result.id: %s\n  process_result.processId: %d\n  process_result.productId: %s\n  process_result.statusId: %d\n  process_result.startTime: %s\n  process_result.endTime: %s\n\n",
+		if (verbose) printf("  process_result.id: %s\n  process_result.processId: %d\n  process_result.productId: %s\n  process_result.statusId: %d\n  process_result.startTime: %s\n  process_result.endTime: %s\n\n",
 				  process_result.id,       process_result.processId,       process_result.productId,       process_result.statusId,       process_result.startTime,       process_result.endTime);
 
 		return 0;
@@ -653,14 +661,15 @@ class Proda                   // begin declaration of the class
 		process_step_result.operatorId=operator_id; // set operator id, this is int number. This field gives us possibility to tell to the system who was working on the station to build product
 
 		r = NewProcessStepResult(h1,&process_step_result);
-		printf("NewProcessStepResult: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
+				if (verbose) printf("NewProcessStepResult: ");
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
 						 process_step_result.id,      process_step_result.processStepId,      process_step_result.processResultId,      process_step_result.statusId,      process_step_result.startTime,      process_step_result.endTime);
 				break;
 			default:
+				printf("NewProcessStepResult: ");
 				printf("error: %d\n",r); // error
 				return 0;
 		}
@@ -680,14 +689,15 @@ class Proda                   // begin declaration of the class
 			strcpy(test_step_result.processStepResultId,process_step_result.id); // set processStepResultId for process step result
 			test_step_result.statusId=-1; // -1 -> dll decide about status
 			r = NewTestStepResult(h1,&test_step_result); // begin test step result creation
-			printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 			switch (r){
 				case 0:
-					printf("ok\n");
-					printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
+					if (verbose) printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+					if (verbose) printf("ok\n");
+					if (verbose) printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
 							 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
 					break;
 				default:
+					printf("NewTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 					printf("error: %d\n\n",r); // error
 					return 0;
 			}
@@ -720,11 +730,11 @@ class Proda                   // begin declaration of the class
 				test_value_result.testValueId=test_value_tbl[j]->id;
 				strcpy(test_value_result.testStepResultId, test_step_result.id);
 				r = NewTestValueResult(h1,&test_value_result); // begin test value result creation
-				std::cout << "NewTestValueResult for testValueId: "<< test_value_tbl[j]->id <<" Test value sequence: " << test_value_tbl[j]->testValueSequence << " Description: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result<< '\n';
+				if (verbose) std::cout << "NewTestValueResult for testValueId: "<< test_value_tbl[j]->id <<" Test value sequence: " << test_value_tbl[j]->testValueSequence << " Description: " << test_value_tbl[j]->description << " Min: " << test_value_tbl[j]->minimum << " Max: " << test_value_tbl[j]->maximum << " Val: "<< test_value_result.result<< '\n';
 
 				switch (r){
 					case 0:
-						printf("ok\n");
+						if (verbose)printf("ok\n");
 						//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
 						//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
 						break;
@@ -740,14 +750,15 @@ class Proda                   // begin declaration of the class
 					Advise: provide structure returned by NewValueResult; if statusId in NewTestValueResult was already set to correct value (by set -1 or required value) then avoid set it again to -1 to avoid performance drop.
 				*/
 				r = SetTestValueResult(h1,0,&test_value_result); // finish test value result creation, isRepeat=0 as we do not repeat measurements
-				printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
 				switch (r){
 					case 0:
-						printf("ok\n");
+						if (verbose) printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
+						if (verbose) printf("ok\n");
 						//printf(" test_value_result.id: %s\n test_value_result.testStepResultId: %s\n test_value_result.testValueId: %d\n test_value_result.result: %.3f\n test_value_result.statusId: %d\n\n",
 						//		 test_value_result.id,      test_value_result.testStepResultId,      test_value_result.testValueId,      test_value_result.result,        test_value_result.statusId);
 						break;
 					default:
+						printf("SetTestValueResult for testValueId=\"%d\"; test value sequence (description): %d (%s): ",test_value_tbl[j]->id,test_value_tbl[j]->testValueSequence,test_value_tbl[j]->description);
 						printf("error: %d\n\n",r); // error
 						return 0;
 				}
@@ -759,14 +770,15 @@ class Proda                   // begin declaration of the class
 			*/
 			test_step_result.statusId=-1;
 			r = SetTestStepResult(h1,0,&test_step_result); // finish test step result creation, isRepeat=0 as we do not repeat steps
-			printf("SetTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 			switch (r){
 				case 0:
-					printf("ok\n");
-					printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
+					if (verbose) printf("SetTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
+					if (verbose) printf("ok\n");
+					if (verbose) printf(" test_step_result.id: %s\n test_step_result.processStepResultId: %s\n test_step_result.testStepId: %d\n test_step_result.statusId: %d\n\n",
 							 test_step_result.id,      test_step_result.processStepResultId,      test_step_result.testStepId,      test_step_result.statusId);
 					break;
 				default:
+					printf("SetTestStepResult for testStepId=\"%d\"; test step sequence/order (description): %d/%d (%s): ",test_step_tbl[i]->id,test_step_tbl[i]->testSequence,test_step_tbl[i]->testOrder,test_step_tbl[i]->description);
 					printf("error: %d\n\n",r); // error
 					return 0;
 			}
@@ -827,6 +839,7 @@ class Proda                   // begin declaration of the class
 		if (data.bad())
 			perror("error while reading file");
 		cout << "CSV feed finished. " << item << " values were uploaded!\n\n";
+		return 0;
 	}
 
 
@@ -1050,18 +1063,19 @@ class Proda                   // begin declaration of the class
 		//strcpy(process_step_result.endTime,end_time); // set end time for process step (station)
 		process_step_result.statusId=-1; // -1 -> dll decide about status
 		r = SetProcessStepResult(h1,device_repeat,&process_step_result); // finish process step result creation
-		printf("SetProcessStepResult: ");
+		if (verbose)
+			printf("SetProcessStepResult: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
 						 process_step_result.id,      process_step_result.processStepId,      process_step_result.processResultId,      process_step_result.statusId,      process_step_result.startTime,      process_step_result.endTime);
 				break;
 			default:
-				printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
+				if (verbose) printf(" process_step_result.id: %s\n process_step_result.processStepId: %d\n process_step_result.processResultId: %s\n process_step_result.statusId: %d\n process_step_result.startTime: %s\n process_step_result.endTime: %s\n\n",
 						 process_step_result.id,      process_step_result.processStepId,      process_step_result.processResultId,      process_step_result.statusId,      process_step_result.startTime,      process_step_result.endTime);
 
-				printf("error: %d\n\n",r); // error
+				if (verbose) printf("error: %d\n\n",r); // error
 				return 0;
 		}
 		return 0;
@@ -1076,15 +1090,15 @@ class Proda                   // begin declaration of the class
 		*/
 		process_result.statusId=-1; // -1 -> dll decide about status
 		r = SetProcessResult(h1,&process_result); // finish process result creation
-		printf("SetProcessResult: ");
+		if (verbose) printf("SetProcessResult: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" process_result.id: %s\n process_result.processId: %d\n process_result.productId: %s\n process_result.statusId: %d\n process_result.startTime: %s\n process_result.endTime: %s\n\n",
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" process_result.id: %s\n process_result.processId: %d\n process_result.productId: %s\n process_result.statusId: %d\n process_result.startTime: %s\n process_result.endTime: %s\n\n",
 						 process_result.id,      process_result.processId,      process_result.productId,      process_result.statusId,      process_result.startTime,      process_result.endTime);
 				break;
 			default:
-				printf("error: %d\n\n",r); // error
+				if (verbose) printf("error: %d\n\n",r); // error
 				return 0;
 		}
 		return 0;
@@ -1099,19 +1113,20 @@ class Proda                   // begin declaration of the class
 			Advise: provide structure filled by NewProduct without any changes
 		*/
 		r = SetProduct_lsn(h1,&product); // finish product creation,
-		printf("SetProduct_lsn: ");
+		if (verbose) printf("SetProduct_lsn: ");
 		switch (r){
 			case 0:
-				printf("ok\n");
-				printf(" product.id: %s\n product.wabcoPartId: %d\n product.serialNumber: %s\n product.individual: %d\n product.comment: %s\n product.crProcessStepId: %d\n product.mdProcessStepId: %d\n product.crTime: %s\n product.mdTime: %s\n\n",
+				if (verbose) printf("ok\n");
+				if (verbose) printf(" product.id: %s\n product.wabcoPartId: %d\n product.serialNumber: %s\n product.individual: %d\n product.comment: %s\n product.crProcessStepId: %d\n product.mdProcessStepId: %d\n product.crTime: %s\n product.mdTime: %s\n\n",
 						 product.id,      product.wabcoPartId,      product.serialNumber,      product.individual,      product.comment,      product.crProcessStepId,      product.mdProcessStepId,      product.crTime,      product.mdTime);
 				break;
 			default:
-				printf("error: %d\n\n",r); // error
+				if (verbose) printf("error: %d\n\n",r); // error
 				return 0;
 		}
 		return 0;
 	}
+
 	int Proda::print_test_steps(int with_test_values=0) {
 		for (i=0;i<test_step_cnt;i++){ // save all test steps
 			std::cout << i+1 << "/" << test_step_cnt <<" TS_ID: " << test_step_tbl[i]->id <<" TS_SEQ: " << test_step_tbl[i]->testSequence <<" TS_ORDER: " << test_step_tbl[i]->testOrder << " TS_DESC: " << test_step_tbl[i]->description <<"\n";
@@ -1135,6 +1150,7 @@ inline bool file_exists_test (const std::string& name) {
 int main(int argc, char *argv[]){
 	puts("PSARK - Proda Swiss Army Knife.");
 	int helpflag = 0;
+	int verboseflag = 0;
 	char *cvalue = NULL;
 	char *wvalue = NULL;
 	char *svalue = NULL;
@@ -1146,7 +1162,7 @@ int main(int argc, char *argv[]){
 	int c;
 
 	const char * help_string = "Tool to make some bulk operations on PRODA database by Wabco.\n\n"
-		"SYNTAX: psark.exe -w <wabco_number> -s [serial] [-c command] [-h] [-f file] [-u db_user] [-p db_password] [-d db_name]\n\n"
+		"SYNTAX: psark.exe -w <wabco_number> -s [serial] [-c command] [-h] [-v] [-f file] [-u db_user] [-p db_password] [-d db_name]\n\n"
 
 		"Available options:\n"
 		"\t-c command to be used\nPlease use of following commands: \n"
@@ -1159,8 +1175,10 @@ int main(int argc, char *argv[]){
 		"\t-f - use CSV file with data to load\n"
 		"\t-u - username which should be used for database connection. Use together with -p and -d options.\n"
 		"\t-p - password which should be used for database connection. Use together with -u and -d options.\n"
-		"\t-d - databasename which should be used for database connection. Appropriate database must be configured in c:\oracle\tnsnames.ora file. Use together with -u and -p options.\n"
+		"\t-d - databasename which should be used for database connection. Appropriate database must be configured in c:\\oracle\\tnsnames.ora file. Use together with -u and -p options.\n"
 		"\t-h - prints this help message\n"
+		"\t-v - verbose mode\n"
+
 
 		"\n\n\nEXAMPLES:\n"
 		"Add new test value for test step_id: 48 test_status: 1 test_value1: 31 test_value2: 40 \n"
@@ -1174,16 +1192,18 @@ int main(int argc, char *argv[]){
 		"Get test_steps defined in db for given wabco_id\n"
 		"psark.exe -c get_test_steps -w 4640062010 -s 11 -u prodang -p wabco -d vb\n\n"
 		"Get test_steps and test_values defined in db for given wabco_id\n"
-		"psark.exe -c get_test_values -w 4640062010 -s 11 -u prodang -p wabco -d vb\n\n"
-
-	;
+		"psark.exe -c get_test_values -w 4640062010 -s 11 -u prodang -p wabco -d vb \n\n"
+		;
 
 	opterr = 0;
-	while ((c = getopt (argc, argv, "hc:w:s:f:u:p:d:")) != -1)
+	while ((c = getopt (argc, argv, "hvc:w:s:f:u:p:d:")) != -1)
 	switch (c)
 	{
 		case 'h':
 			helpflag = 1;
+			break;
+		case 'v':
+			verboseflag = 1;
 			break;
 		case 'c':
 			cvalue = optarg;
@@ -1208,7 +1228,7 @@ int main(int argc, char *argv[]){
 			break;
 
 		case '?':
-			if ((optopt == 'c') or (optopt == 'f') or (optopt == 'u') or (optopt == 'p') or (optopt == 'd'))
+			if ((optopt == 'c') or (optopt == 'f') or (optopt == 'u') or (optopt == 'p') or (optopt == 'd') or (optopt == 's')or (optopt == 'w'))
 				fprintf (stderr, "Option -%c requires an argument.\n", optopt);
 			else if (isprint (optopt))
 				fprintf (stderr, "Unknown option `-%c'.\n", optopt);
@@ -1278,10 +1298,8 @@ int main(int argc, char *argv[]){
 		return 0;
 
 	}
-	//return 0;
 	std::string args[argc];
 	std::string command, wabco_number, serial;
-	//int
 	command = cvalue;
 	wabco_number = wvalue;
 	serial = svalue;
@@ -1291,24 +1309,21 @@ int main(int argc, char *argv[]){
 		//printf ("Non-option argument %s\n", argv[index]);
 		args[++i] =  (std::string) argv[index];
 	}
-	std::cout << "command: " << command << "\n";
-	std::cout << "wabco_number: " << wabco_number << "\n";
-	std::cout << "serial: " << serial << "\n";
+	std::cout << "Command: " << command << " Wabco_number: " << wabco_number << " Serial: " << serial << "\n";
 
 	// PSARK initialization
 	Proda *Psark = new Proda();
+	Psark->set_verbose(verboseflag);
 	Psark->init();
 
 	// set db connection parametes if defined on commandline
 	if (db_user and db_pass and db_name) {
-		Psark->SetDBConnectionParams(db_user, db_pass, db_name);
+		Psark->set_db_connection_params(db_user, db_pass, db_name);
 	}
 
-
 	if (command == "generate_test_value_data") {
-		std::cout << "generating test data.\n" << "Wabco Number: " << args[1] << ", Serial: " << args[2] <<"\n";
 		Psark->login();
-		Psark->identify_me(args[1]);
+		Psark->identify_me(wabco_number);
 		Psark->get_process();
 		Psark->get_production_line();
 		Psark->get_process_step();
@@ -1318,7 +1333,7 @@ int main(int argc, char *argv[]){
 		Psark->get_test_step_params();
 		Psark->get_test_values();
 
-		Psark->new_product(args[2]);
+		Psark->new_product(serial);
 		Psark->new_process_result();
 		Psark->new_process_step_result();
 
@@ -1329,7 +1344,6 @@ int main(int argc, char *argv[]){
 		Psark->set_product();
 		Psark->logout();
 	} else if (command == "new_tv") {
-		std::cout << "Adding new product.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
 		Psark->login();
 		Psark->identify_me(wabco_number);
 		Psark->get_process();
@@ -1361,7 +1375,6 @@ int main(int argc, char *argv[]){
 		Psark->set_product();
 		Psark->logout();
 	} else if (command == "get_test_steps") {
-		std::cout << "Running: get_tv.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
 		Psark->login();
 		Psark->identify_me(wabco_number);
 		Psark->get_process();
@@ -1375,7 +1388,6 @@ int main(int argc, char *argv[]){
 		Psark->print_test_steps(0);
 		Psark->logout();
 	} else if (command == "get_test_values") {
-		std::cout << "Running: get_tv.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
 		Psark->login();
 		Psark->identify_me(wabco_number);
 		Psark->get_process();
@@ -1389,7 +1401,6 @@ int main(int argc, char *argv[]){
 		Psark->print_test_steps(1);
 		Psark->logout();
 	} else if (command == "csv_feed") {
-		std::cout << "Running: csv_feed.\n" << "Wabco Number: " << wabco_number << ", Serial: " << serial <<"\n";
 		Psark->login();
 		Psark->identify_me(wabco_number);
 		Psark->get_process();
@@ -1412,7 +1423,7 @@ int main(int argc, char *argv[]){
 		Psark->set_product();
 		Psark->logout();
 	} else {
-		std::cout <<"command not recognized: " << command << "\n";
+		std::cout <<"Command not recognized: " << command << "\n";
 	}
 	Psark->exit_prodll();
 	std::cout << "PSARK finished. \n";
